@@ -367,8 +367,8 @@ function ladderAndBrowse(G) {
   function render() {
     tabs.querySelectorAll('button[data-i]').forEach(b => b.classList.toggle('on', +b.dataset.i === cur));
     const l = lv[cur];
-    // weighted random sample without replacement (Efraimidis-Spirakis), adult games left out
-    const pool = l.sel.filter(g => !g.adult).map(g => [Math.pow(Math.random(), 1 / g.w), g])
+    // weighted random sample without replacement (Efraimidis-Spirakis); adult and unreleased games left out
+    const pool = l.sel.filter(g => !g.adult && g.y <= 2026).map(g => [Math.pow(Math.random(), 1 / g.w), g])
       .sort((a, b) => b[0] - a[0]).slice(0, 24).map(x => x[1]);
     const n = pool.filter(g => g.r < 10).length;
     document.getElementById('count').innerHTML = `<span class="red">${n} of 24</span> ignored in this draw. Across Steam, ${l.ign.toFixed(0)}% of this level got ignored.`;
