@@ -116,7 +116,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 <section>
   <h2>Page quality vs. reviews</h2>
   <p class="lead">Every dot is one game. Up means a better page score from the AI. Right means more Steam reviews, each step ten times more. Hover or tap a dot to see the game.</p>
-  <div class="keys"><span><i style="background:var(--red)"></i>ignored (under 10 reviews)</span><span><i style="background:var(--grey)"></i>10 to 999 reviews</span><span><i style="background:var(--green)"></i>hit (1,000+)</span><span><i style="background:#fff;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>typical page score at each level</span></div>
+  <div class="keys"><span><i style="background:var(--red)"></i>ignored (under 10 reviews)</span><span><i style="background:var(--grey)"></i>10 to 999 reviews</span><span><i style="background:var(--green)"></i>hit (1,000+)</span><span><i style="background:#fff;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>typical page score at each level</span><span><i style="background:#ffd166;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>page score 75</span></div>
   <div class="chart" id="scatterBox"><canvas id="scatter"></canvas><div class="tip" id="tip"></div></div>
   <p class="fit" id="fit"></p>
   <p class="note">The sample includes more successful games than Steam has, so that every level is covered. The charts below are weighted back to represent all 85,152 games.</p>
@@ -265,6 +265,10 @@ function scatter(G) {
   for (const g of G) { const dx = g.s - mx, dy = L(g.r) - my; sxy += g.w * dx * dy; sxx += g.w * dx * dx; syy += g.w * dy * dy; }
   const R2 = sxy * sxy / (sxx * syy), per10 = Math.pow(10, 10 * sxy / sxx);
   document.getElementById('fit').innerHTML = `<b>R² = ${R2.toFixed(2)}</b>: the page score alone explains about ${Math.round(R2 * 100)}% of the differences in reviews (log scale, weighted to all of Steam). Each +10 points of page score goes with about ${per10.toFixed(1)}× more reviews.`;
+  // what happens above a page score of 75 (Steam-weighted)
+  const T = 75, top = G.filter(g => g.s >= T), tw = top.reduce((a, g) => a + g.w, 0);
+  const pct = f => Math.round(top.filter(f).reduce((a, g) => a + g.w, 0) / tw * 100);
+  const lineLabel = `${T}+: ${pct(g => g.r >= 1000)}% hits · ${pct(g => g.r >= 100)}% reach 100+ reviews · ${pct(g => g.r < 10)}% ignored`;
   let grid = new Map();
   function draw() {
     const Wd = box.clientWidth, H = Math.max(340, Math.min(580, Wd * 0.6)), dpr = devicePixelRatio || 1;
@@ -300,6 +304,11 @@ function scatter(G) {
     line.slice().reverse().forEach(([r, , , b]) => c.lineTo(x(r), y(b))); c.fill();
     c.strokeStyle = '#fff'; c.lineWidth = 2.5; c.beginPath();
     line.forEach(([r, , med], i) => i ? c.lineTo(x(r), y(med)) : c.moveTo(x(r), y(med))); c.stroke();
+    c.save(); c.setLineDash([7, 5]); c.strokeStyle = '#ffd166'; c.lineWidth = 1.6;
+    c.beginPath(); c.moveTo(m.l, y(T)); c.lineTo(Wd - m.r, y(T)); c.stroke(); c.restore();
+    c.font = '600 13px Inter'; c.textAlign = 'right'; c.lineWidth = 4; c.strokeStyle = '#0b0e14';
+    const lab = Wd < 600 ? lineLabel.split(' · ').slice(0, 2).join(' · ') : lineLabel;
+    c.strokeText(lab, Wd - m.r, y(T) - 7); c.fillStyle = '#ffd166'; c.fillText(lab, Wd - m.r, y(T) - 7);
     c.fillStyle = '#8e99ab'; c.font = '12px Inter'; c.textAlign = 'left'; c.fillText('page score', 6, 12);
     c.fillStyle = '#eef2f7'; c.font = '600 14px Inter'; c.textAlign = 'right'; c.fillText(`R² = ${R2.toFixed(2)}`, Wd - m.r, m.t + 6);
     c.textAlign = 'right'; c.fillText('Steam reviews →', Wd - m.r, H - m.b - 6);
@@ -331,7 +340,8 @@ function scatter(G) {
     const p = nearest(ev); if (!p) return hide();
     if (matchMedia('(hover: hover)').matches || shown === p[2]) window.open(steam(p[2].id), '_blank'); else show(p);
   });
-  draw(); let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });
+  draw(); document.fonts.ready.then(draw);  // redraw once Inter is loaded
+  let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });
 }
 
 function dist(G) {
