@@ -72,6 +72,27 @@ svg text{font-family:Inter,sans-serif}
 .game.ign small .r{color:var(--red);font-weight:600}
 .count{color:var(--mut);font-size:15px;margin:0 0 16px}
 
+/* presence */
+.psec h3{font-size:20px;margin:34px 0 8px}
+.pmxoxed{position:relative;overflow-x:auto}
+.pmx{display:grid;grid-template-columns:120px repeat(4,minmax(0,1fr));gap:16px 12px;align-items:start;min-width:640px;padding:4px 0 8px}
+.pmx .hd{font:500 12.5px/1.35 Inter;color:var(--mut)}
+.pmx .hd b{display:block;color:var(--fg);font:700 15px "Space Grotesk";margin-bottom:2px}
+.pmx .row{font:700 15px/1.25 "Space Grotesk";padding-top:3px}
+.pmx .row small{display:block;font:500 12px Inter;color:var(--mut)}
+.cell{display:flex;flex-wrap:wrap;gap:6px}
+.cell a{width:calc(50% - 3px);min-width:64px}
+.cell img{width:100%;aspect-ratio:460/215;object-fit:cover;border-radius:4px;display:block;background:#1d2533}
+.cell .empty{color:var(--mut);font-size:13px}
+.findings{list-style:none;margin:0;padding:0;max-width:820px}
+.findings li{border-top:1px solid var(--line);padding:10px 0}
+.findings li b{font-size:15.5px}
+.findings li>small{color:var(--mut);font-size:12.5px;margin-left:8px}
+.findings li p{margin:3px 0;color:#c7cfdb;font-size:14.5px;line-height:1.45}
+.findings li a{font-size:12.5px;margin-right:2px}
+.stack{display:flex;height:22px;border-radius:3px;overflow:hidden}
+.stack i{display:block;height:100%}
+
 /* questions */
 .qs h3{font-size:20px;margin:30px 0 8px}
 .qs h3 span{color:var(--mut);font:500 14px Inter;margin-left:6px}
@@ -133,6 +154,23 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <h2>Better page, better odds</h2>
   <p class="lead">Games grouped by where their page score ranks on Steam. For each group, the red bar is the share that got ignored and the green bar the share that became a hit with 1,000+ reviews.</p>
   <div class="ladder" id="ladder"></div>
+</section>
+
+<section class="psec">
+  <h2>Nobody ever saw those pages</h2>
+  <p class="lead">A few games with a page score of 75 or more still got ignored. I took all 18 of them and 18 games with pages just as good that took off, and had a second AI (Claude Haiku) search the web for each one: official site, social accounts, press, videos by other creators, community threads. Store and database pages don't count. Hover a cover for what it found; click to open the game.</p>
+  <div class="pmxbox" id="pmxbox"><div class="pmx" id="pmx"></div><div class="tip" id="ptip"></div></div>
+  <p class="fit" id="psum"></p>
+  <h3>What the search found for the 18 ignored games</h3>
+  <ul class="findings" id="findings"></ul>
+  <h3>How many social accounts the games link on their Steam page</h3>
+  <p class="note">All 1,004 games with a page score of 75 or more, weighted to Steam, split by outcome. The count is what each store page itself lists.</p>
+  <div class="keys" style="margin:10px 0" id="linkkeys"></div>
+  <div class="ladder" id="linkdist"></div>
+  <h3>What happened to those games</h3>
+  <p class="note">Same games, grouped by how many social accounts their page links.</p>
+  <div class="ladder" id="linkout"></div>
+  <p class="note">One caveat: part of the presence of the games that took off came after their success, because popular games get videos and articles written about them. This cannot show that marketing causes success. The other side is unambiguous, though: the ignored games were not covered before, during or after launch. Nobody knew they existed.</p>
 </section>
 
 <section>
@@ -221,6 +259,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <p>I started from a list of 85,152 Steam games and their review counts, from SteamSpy. I picked 14,836 of them so that every level of success is covered, from zero reviews to millions, and weighted them back so the numbers represent all of Steam.</p>
   <p>For each game I took what a player sees on its store page: the capsule image, four screenshots and the description, from Steam's store API. An AI model, Jev by TypeSafe, answered the 46 questions above about each page. Asked the same questions twice, it gave practically the same answers (r = 0.99). On 240 pages that I rated blind myself, it agreed with me on which page was better 7 to 8 times out of 10.</p>
   <p>Steam keeps sales private, so success is measured in reviews. One review is roughly 30 to 60 copies sold. "Ignored" means fewer than 10 reviews.</p>
+  <p>For the web-presence section, Claude Haiku (a small model from Anthropic) web-searched 36 of these games: every ignored game with a page score of 75 or more, plus 18 equally good pages that ended up with 1,000 to 30,000 reviews, picked at random as a control. Each search looked for an official site, social accounts, press coverage, videos by other creators and community threads, with the same questions every time. Every claim on that section links to what the search actually found.</p>
   <h2 style="margin-top:44px">What this does not prove</h2>
   <p>It shows a link, not a cause. Teams that make great pages often also have money, experience and fans, which is why the model above puts the developer's track record first.</p>
   <p>Pages were measured as they are today, and successful games often polish their page after launch. For pages that were never updated a year after release, the link is weaker but still there. The AI also recognizes some famous games, and it judges how a game is presented, not whether it is fun. Brand-new games with zero reviews are under-counted in the list.</p>
@@ -245,6 +284,7 @@ fetch('data.json').then(r => r.json()).then(D => {
   let acc = 0;
   for (const g of G.slice().sort((a, b) => a.s - b.s)) { acc += g.w; g.p = acc / W; }  // Steam-weighted percentile
   hero(G); scatter(G); dist(G); ladderAndBrowse(G);
+  fetch('presence.json').then(r => r.json()).then(presence);
 });
 
 function hero(G) {
@@ -399,6 +439,70 @@ function ladderAndBrowse(G) {
       + `<b>${esc(g.n)}</b><small><span class="r">${g.r.toLocaleString('en')} reviews</span> · score ${g.s.toFixed(0)}</small></a>`).join('');
   }
   render();
+}
+
+function presence(P) {
+  const byId = Object.fromEntries(P.games.map(g => [g.id, g]));
+  const LVL = [['Level 0', 'nothing outside the stores'], ['Level 1', 'only their own channels'],
+               ['Level 2', 'some outside attention'], ['Level 3', 'real coverage']];
+  const GRP = {ignored: ['Ignored', 'under 10 reviews'], control: ['Took off', '1,000–30,000 reviews']};
+  const BUCK = ['no links', '1 link', '2 links', '3 links', '4+ links'];
+  const SH = ['#2b3648', '#3d5570', '#4f77a0', '#66a3d4', '#66c0f4'];
+  const count = (grp, f) => P.games.filter(g => g.g === grp && f(g)).length;
+
+  // matrix: group rows x presence level columns, with the game covers in each cell
+  document.getElementById('pmx').innerHTML = '<div></div>'
+    + LVL.map(([b, t]) => `<div class="hd"><b>${b}</b>${t}</div>`).join('')
+    + Object.entries(GRP).map(([grp, [name, sub]]) =>
+        `<div class="row">${name}<small>${sub}</small></div>`
+        + P.matrix[grp === 'ignored' ? 0 : 1].map(cell => `<div class="cell">`
+          + (cell.length ? cell.map(id => { const g = byId[id];
+              return `<a data-g="${id}" href="${steam(id)}" target="_blank" rel="noopener"><img src="${CDN(id, g.h)}" alt="${esc(g.n)}" loading="lazy"></a>`; }).join('')
+            : '<span class="empty">—</span>') + '</div>').join('')).join('');
+  const box = document.getElementById('pmxbox'), ptip = document.getElementById('ptip');
+  box.addEventListener('mouseover', ev => {
+    const a = ev.target.closest('a[data-g]'); if (!a) return;
+    const g = byId[+a.dataset.g];
+    ptip.innerHTML = `<div><b>${esc(g.n)}</b><span style="color:${g.g === 'ignored' ? 'var(--red)' : 'var(--green)'}">${g.r.toLocaleString('en')} reviews</span> · page score ${g.s.toFixed(0)}<br>${esc(g.sum)}</div>`;
+    ptip.style.display = 'block';
+    const r = a.getBoundingClientRect(), b = box.getBoundingClientRect();
+    ptip.style.left = Math.max(0, Math.min(r.left - b.left + box.scrollLeft, box.scrollWidth - ptip.offsetWidth)) + 'px';
+    ptip.style.top = (r.bottom - b.top + box.scrollTop + 8) + 'px';
+  });
+  box.addEventListener('mouseout', ev => { if (ev.target.closest('a[data-g]')) ptip.style.display = 'none'; });
+
+  const nvid = grp => count(grp, g => g.videos.length > 0), nthr = grp => count(grp, g => g.threads.length > 0);
+  document.getElementById('psum').innerHTML =
+    `<b>None of the 18 ignored games has a single video by another creator</b>, and only ${nthr('ignored')} have threads in any community. `
+    + `Of the 18 that took off, ${nvid('control')} have videos by other creators and ${nthr('control')} have community threads. `
+    + `The "level 2" among the ignored is usually one or two reviews on small sites.`;
+
+  // what the search found for each ignored game, one line each, with the sources
+  document.getElementById('findings').innerHTML = P.games.filter(g => g.g === 'ignored')
+    .sort((a, b) => b.lvl - a.lvl || a.n.localeCompare(b.n)).map(g => {
+      const src = [...g.press, ...g.videos, ...g.threads];
+      return `<li><b><a href="${steam(g.id)}" target="_blank" rel="noopener" style="color:var(--fg)">${esc(g.n)}</a></b>`
+        + `<small>level ${g.lvl} · ${g.r.toLocaleString('en')} reviews</small><p>${esc(g.sum)}</p>`
+        + (src.length ? `<small>${src.map(s => `<a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a>`).join(' · ')}</small>`
+          : '<small>nothing found outside the stores</small>') + '</li>';
+    }).join('');
+
+  // social links listed on the store page, by outcome group
+  const GN = {ignored: 'Ignored', mid: '10–999 reviews', hits: 'Hits'};
+  document.getElementById('linkkeys').innerHTML = BUCK.map((b, i) =>
+    `<span><i style="background:${SH[i]};border-radius:2px"></i>${b}</span>`).join('');
+  document.getElementById('linkdist').innerHTML = P.links.map(l =>
+    `<div class="rung"><div class="who">${GN[l.name]}<small>avg ${l.avg} links</small></div><div class="bars">`
+    + `<div class="stack">${l.dist.map((v, i) => `<i style="width:${v}%;background:${SH[i]}"></i>`).join('')}</div>`
+    + `<small class="key" style="color:var(--mut);font-size:12.5px">${l.zero}% link nothing</small></div></div>`).join('');
+
+  // outcome split per number of links
+  const o0 = P.outcomes[0], o4 = P.outcomes[4];
+  document.getElementById('linkout').innerHTML = P.outcomes.map(o =>
+    `<div class="rung"><div class="who">${BUCK[o.bucket]}<small>${o.n} games</small></div><div class="bars">`
+    + `<div class="bar"><div style="width:${o.ign * .8}%;background:var(--red)"></div><span class="red">${o.ign.toFixed(0)}% ignored</span></div>`
+    + `<div class="bar"><div style="width:${o.hit * .8}%;background:var(--green)"></div><span class="green">${o.hit.toFixed(0)}% hits</span></div></div></div>`).join('')
+    + `<p class="fit" style="margin-top:14px">With a page score of 75 or more, a game that links <b>no social account</b> got ignored ${o0.ign.toFixed(0)}% of the time and became a hit ${o0.hit.toFixed(0)}% of the time. One that links <b>four or more</b>: ${o4.ign.toFixed(0)}% ignored, ${o4.hit.toFixed(0)}% hits.</p>`;
 }
 </script>
 </body>
