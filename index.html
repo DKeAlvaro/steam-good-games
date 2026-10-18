@@ -22,6 +22,8 @@ section{padding:72px 0 0}
 a{color:var(--blue)}
 .red{color:var(--red)}.green{color:var(--green)}
 .note{color:var(--mut);font-size:14px;margin:12px 0 0;max-width:760px}
+.fit{color:#c7cfdb;font-size:15px;margin:12px 0 0;max-width:760px}
+.fit b{color:var(--fg)}
 
 /* hero */
 .hero{position:relative;overflow:hidden;padding:0}
@@ -116,6 +118,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <p class="lead">Every dot is one game. Up means a better page score from the AI. Right means more Steam reviews, each step ten times more. Hover or tap a dot to see the game.</p>
   <div class="keys"><span><i style="background:var(--red)"></i>ignored (under 10 reviews)</span><span><i style="background:var(--grey)"></i>10 to 999 reviews</span><span><i style="background:var(--green)"></i>hit (1,000+)</span><span><i style="background:#fff;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>typical page score at each level</span></div>
   <div class="chart" id="scatterBox"><canvas id="scatter"></canvas><div class="tip" id="tip"></div></div>
+  <p class="fit" id="fit"></p>
   <p class="note">The sample includes more successful games than Steam has, so that every level is covered. The charts below are weighted back to represent all 85,152 games.</p>
 </section>
 
@@ -221,7 +224,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <h2 style="margin-top:44px">What this does not prove</h2>
   <p>It shows a link, not a cause. Teams that make great pages often also have money, experience and fans, which is why the model above puts the developer's track record first.</p>
   <p>Pages were measured as they are today, and successful games often polish their page after launch. For pages that were never updated a year after release, the link is weaker but still there. The AI also recognizes some famous games, and it judges how a game is presented, not whether it is fun. Brand-new games with zero reviews are under-counted in the list.</p>
-  <p class="note">Weighted Spearman correlation between page score and reviews: +0.40, and about +0.30 with the strictest controls. Model R² for reviews: facts only 0.65, facts plus page 0.69, page only 0.45.</p>
+  <p class="note">Weighted Spearman correlation between page score and reviews: +0.40, and about +0.30 with the strictest controls. Linear R² of the page score alone: 0.17 (0.25 unweighted, because the sample over-represents successful games). Model R² for reviews: facts only 0.65, facts plus page 0.69, page only 0.45.</p>
 </section>
 
 <footer>By <a href="https://dkealvaro.github.io/">Álvaro Menéndez Ros</a> · October 2026 · Data: Steam Store API, SteamSpy · AI: TypeSafe Jev · Game art © its owners, via Steam's CDN.</footer>
@@ -254,6 +257,14 @@ function scatter(G) {
   const XMAX = L(1e7), Y0 = 15, Y1 = 92;
   // whole-number review counts are spread a little sideways so they don't stack in one column
   const order = G.slice().sort((a, b) => (a.r >= 1000) - (b.r >= 1000) || (b.r < 10) - (a.r < 10));
+  // Steam-weighted linear fit of log10(reviews + 1) on page score
+  let sw = 0, mx = 0, my = 0;
+  for (const g of G) { sw += g.w; mx += g.w * g.s; my += g.w * L(g.r); }
+  mx /= sw; my /= sw;
+  let sxy = 0, sxx = 0, syy = 0;
+  for (const g of G) { const dx = g.s - mx, dy = L(g.r) - my; sxy += g.w * dx * dy; sxx += g.w * dx * dx; syy += g.w * dy * dy; }
+  const R2 = sxy * sxy / (sxx * syy), per10 = Math.pow(10, 10 * sxy / sxx);
+  document.getElementById('fit').innerHTML = `<b>R² = ${R2.toFixed(2)}</b>: the page score alone explains about ${Math.round(R2 * 100)}% of the differences in reviews (log scale, weighted to all of Steam). Each +10 points of page score goes with about ${per10.toFixed(1)}× more reviews.`;
   let grid = new Map();
   function draw() {
     const Wd = box.clientWidth, H = Math.max(340, Math.min(580, Wd * 0.6)), dpr = devicePixelRatio || 1;
@@ -290,6 +301,7 @@ function scatter(G) {
     c.strokeStyle = '#fff'; c.lineWidth = 2.5; c.beginPath();
     line.forEach(([r, , med], i) => i ? c.lineTo(x(r), y(med)) : c.moveTo(x(r), y(med))); c.stroke();
     c.fillStyle = '#8e99ab'; c.font = '12px Inter'; c.textAlign = 'left'; c.fillText('page score', 6, 12);
+    c.fillStyle = '#eef2f7'; c.font = '600 14px Inter'; c.textAlign = 'right'; c.fillText(`R² = ${R2.toFixed(2)}`, Wd - m.r, m.t + 6);
     c.textAlign = 'right'; c.fillText('Steam reviews →', Wd - m.r, H - m.b - 6);
   }
   function nearest(ev) {
