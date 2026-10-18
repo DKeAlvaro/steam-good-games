@@ -4,207 +4,246 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Do great games get ignored on Steam?</title>
-<meta name="description" content="An AI judged the store pages of 14,836 Steam games. We compared page quality with how many players each game reached.">
+<meta name="description" content="I had an AI rate the store pages of 14,836 Steam games, then checked which ones found players.">
+<meta property="og:title" content="Do great games get ignored on Steam?">
+<meta property="og:description" content="14,836 Steam store pages rated by AI. Great-looking games are almost never ignored.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Ibarra+Real+Nova:wght@600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#e7dfcc;--paper2:#ddd3bb;--ink:#2b2620;--mut:#6b6254;--acc:#9b2114;--line:#bfb398}
+:root{--bg:#0b0e14;--panel:#131923;--panel2:#1a2230;--line:#243041;--fg:#eef2f7;--mut:#8e99ab;--red:#ff4d5e;--green:#8fdc5a;--blue:#66c0f4}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:19px/1.6 Newsreader,Georgia,serif}
-.wrap{max-width:860px;margin:0 auto;padding:0 22px}
-.mono{font-family:"IBM Plex Mono",monospace}
-header{border-bottom:3px double var(--ink);padding:34px 0 26px;margin-bottom:28px}
-.kicker{font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
-h1{font:700 clamp(38px,6vw,62px)/1.04 "Ibarra Real Nova",serif;margin:14px 0 14px}
-.dek{font-size:22px;color:var(--mut);margin:0}
-h2{font:700 30px/1.15 "Ibarra Real Nova",serif;margin:52px 0 12px;border-top:1px solid var(--line);padding-top:26px}
-h3{font:600 15px/1.3 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 8px}
-p{margin:0 0 14px}
-.answer{background:var(--ink);color:var(--paper);padding:26px 28px;margin:26px 0;border-radius:2px}
-.answer .big{font:700 34px/1.15 "Ibarra Real Nova",serif;margin-bottom:8px}
-.answer p{margin:0;font-size:20px}
-.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:22px 0}
-.num{border:1px solid var(--line);padding:16px 16px 14px;background:rgba(255,255,255,.18)}
-.num>b{display:block;font:700 46px/1 "Ibarra Real Nova",serif;color:var(--acc);margin-bottom:8px}
-.num span{font-size:16px;line-height:1.4;display:block}
-.box{border-left:4px solid var(--acc);background:rgba(255,255,255,.22);padding:16px 20px;margin:20px 0}
-.box h3{margin-top:0}
-/* stacked bars */
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font:12px/1.3 "IBM Plex Mono",monospace;margin:10px 0 12px}
-.legend i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px}
-.bars{font:12px/1 "IBM Plex Mono",monospace}
-.bar{display:grid;grid-template-columns:118px 1fr;align-items:center;gap:10px;margin:4px 0}
-.bar .lab{text-align:right;color:var(--mut)}
-.bar .lab b{color:var(--ink)}
-.track{display:flex;height:26px;border:1px solid var(--ink)}
-.track span{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;overflow:hidden;white-space:nowrap}
-.c0{background:#2b2620}.c1{background:#7a6f60}.c2{background:#b9a98a;color:#2b2620!important}.c3{background:#c8553d}.c4{background:#9b2114}
-figure{margin:22px 0}
-figure img{width:100%;display:block;border:1px solid var(--line)}
-figcaption{font-size:15px;color:var(--mut);margin-top:6px}
-/* game cards */
-.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin:12px 0 6px}
-.game{background:rgba(255,255,255,.25);border:1px solid var(--line)}
-.game img{width:100%;aspect-ratio:460/215;object-fit:cover;display:block;background:#cfc4aa}
-.game div{padding:8px 10px;font-size:15px;line-height:1.35}
-.game b{display:block;font-family:"Ibarra Real Nova",serif;font-size:18px}
-.game small{font:12px/1.4 "IBM Plex Mono",monospace;color:var(--mut)}
-.score{font:600 12px "IBM Plex Mono",monospace;color:var(--acc)}
-ol li,ul li{margin-bottom:8px}
-table{border-collapse:collapse;width:100%;font-size:16px;margin:10px 0 16px}
-th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left}
-th{font:600 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em}
-td.n{font-family:"IBM Plex Mono",monospace;text-align:right}
-.nerd{font-size:16px;color:var(--mut)}
-footer{border-top:3px double var(--ink);margin-top:56px;padding:20px 0 50px;font-size:15px;color:var(--mut)}
-a{color:var(--acc)}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,.big,.num{font-family:"Space Grotesk",Inter,sans-serif}
+h2{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 10px;letter-spacing:-.01em}
+.lead{color:var(--mut);margin:0 0 22px;max-width:640px}
+section{padding:64px 0;border-top:1px solid var(--line)}
+a{color:var(--blue)}
+.red{color:var(--red)}.green{color:var(--green)}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:0;border:0;min-height:88vh;display:flex;align-items:center}
+.mosaic{position:absolute;inset:-14% -10%;display:grid;grid-template-columns:repeat(8,1fr);gap:10px;transform:rotate(-8deg);opacity:.7}
+.mosaic img{width:100%;aspect-ratio:460/215;object-fit:cover;border-radius:6px;display:block}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,14,20,.97) 0%,rgba(11,14,20,.88) 45%,rgba(11,14,20,.45) 100%),linear-gradient(180deg,rgba(11,14,20,0) 60%,var(--bg) 100%)}
+.hero .wrap{position:relative;z-index:1;padding-top:60px;padding-bottom:60px}
+.kicker{font:600 13px/1 Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:clamp(42px,8vw,92px);line-height:.98;margin:16px 0 18px;letter-spacing:-.025em;max-width:900px}
+.sub{font-size:clamp(17px,2.2vw,21px);color:#c7cfdb;max-width:640px;margin:0 0 30px}
+.answer{display:inline-block;background:var(--fg);color:var(--bg);padding:14px 22px;border-radius:12px;font:700 clamp(22px,3vw,30px)/1.2 "Space Grotesk"}
+.answer small{display:block;font:500 15px/1.4 Inter;color:#3a4352;margin-top:4px}
+
+/* duo */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px}
+.stat .num{font-size:clamp(64px,10vw,112px);font-weight:700;line-height:.9;letter-spacing:-.03em}
+.stat p{margin:12px 0 0;font-size:18px}
+.stat p b{color:var(--fg)}
+.note{color:var(--mut);font-size:14px;margin-top:14px}
+
+/* tiles */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.panel h3{margin:0 0 4px;font:700 20px "Space Grotesk"}
+.panel .count{color:var(--mut);font-size:15px;margin-bottom:14px}
+.panel .count b{font-size:18px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{position:relative;display:block;border-radius:8px;overflow:hidden;background:#1d2533;text-decoration:none;color:var(--fg);outline:2px solid transparent;transition:transform .12s}
+.tile:hover{transform:translateY(-2px)}
+.tile img{width:100%;aspect-ratio:460/215;object-fit:cover;display:block}
+.tile span{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 4px;font:600 11px/1.1 Inter;background:linear-gradient(transparent,rgba(0,0,0,.85));text-align:right}
+.tile.ign{outline-color:var(--red)}
+.tile.ign span{color:#fff;background:linear-gradient(transparent,rgba(160,20,35,.95))}
+.tile.ign:before{content:"IGNORED";position:absolute;top:5px;left:5px;z-index:1;background:var(--red);color:#fff;font:700 9px/1 Inter;letter-spacing:.08em;padding:3px 5px;border-radius:3px}
+.btn{background:var(--fg);color:var(--bg);border:0;border-radius:999px;padding:11px 20px;font:700 15px Inter;cursor:pointer;margin-top:18px}
+.btn:hover{background:var(--blue)}
+
+/* ladder */
+.ladder{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.legend{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--mut);margin-bottom:14px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.rung{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.rung:first-of-type{border-top:0}
+.rung .who{font:700 16px "Space Grotesk"}
+.rung .who small{display:block;font:500 12px Inter;color:var(--mut)}
+.bars{display:grid;gap:5px}
+.bar{display:flex;align-items:center;gap:8px;font:600 13px Inter}
+.bar div{height:14px;border-radius:4px;min-width:3px}
+.bar .r{background:var(--red)}.bar .g{background:var(--green)}
+
+/* first game */
+.first{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.first .stat .num{font-size:clamp(44px,6vw,68px)}
+.vs{color:var(--mut);font:500 15px Inter;display:block;margin-top:6px}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--fg);transition:border-color .12s}
+.card:hover{border-color:var(--blue)}
+.card img{width:100%;aspect-ratio:460/215;object-fit:cover;display:block}
+.card div{padding:8px 10px 10px;font-size:14px;line-height:1.3}
+.card b{display:block;margin-bottom:3px}
+.card small{color:var(--mut)}
+
+/* tips */
+.tips{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media (max-width:1000px){.tips{grid-template-columns:repeat(2,1fr)}}
+.tip{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tip b{display:block;font:700 18px/1.25 "Space Grotesk";margin-bottom:6px}
+.tip p{margin:0;color:var(--mut);font-size:15px}
+.tip.bad b{color:var(--red)}
+
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px 18px;margin:10px 0}
+summary{cursor:pointer;font:700 17px "Space Grotesk";padding:12px 0}
+details ul{color:#c7cfdb;font-size:15px;padding-left:20px}
+details li{margin-bottom:8px}
+footer{border-top:1px solid var(--line);padding:30px 0 60px;color:var(--mut);font-size:14px}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  section{padding:46px 0}
+  .duo,.compare,.first{grid-template-columns:1fr}
+  .mosaic{grid-template-columns:repeat(4,1fr)}
+  .hero{min-height:auto}
+  .hero:after{background:linear-gradient(180deg,rgba(11,14,20,.8),rgba(11,14,20,.94) 40%,var(--bg))}
+  .tips{grid-template-columns:1fr}
+  .rung{grid-template-columns:84px 1fr;gap:10px}
+  .tiles{grid-template-columns:repeat(4,1fr);gap:5px}
+  .tile span{font-size:9px;padding:10px 3px 2px}
+  .tile.ign:before{font-size:7px;padding:2px 3px}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
+
+<section class="hero">
+  <div class="mosaic" id="mosaic"></div>
+  <div class="wrap">
+    <div class="kicker">14,836 Steam games · rated by AI</div>
+    <h1>Do great games get ignored on Steam?</h1>
+    <p class="sub">I had an AI rate the store page of 14,836 Steam games: the art, the screenshots, the description. Then I checked which games actually found players.</p>
+    <div class="answer">Almost never.<small>Great-looking games aren't guaranteed a hit. But they're very rarely ignored.</small></div>
+  </div>
+</section>
+
 <div class="wrap">
 
-<header>
-  <div class="kicker">Steam · Data story · October 2026</div>
-  <h1>Do great games get ignored on Steam?</h1>
-  <p class="dek">We had an AI judge the store pages of 14,836 Steam games, then checked how many players each game actually reached. Here is what we found.</p>
-</header>
+<section>
+  <div class="duo">
+    <div class="stat"><div class="num red">48%</div><p>of games with a <b>below-average</b> store page got ignored.</p></div>
+    <div class="stat"><div class="num green">5%</div><p>of games with a <b>top-5%</b> store page got ignored. That's 1 in 20.</p></div>
+  </div>
+  <p class="note">Ignored = fewer than 10 Steam reviews, roughly under 500 copies sold. Percentages are weighted to represent all 85,152 games in the list.</p>
+</section>
 
-<p>There is a scary idea that many people who want to make games believe in: you spend years building something great, you put it on Steam, and… nothing. Nobody plays it. Nobody notices.</p>
-<p>If that were true, it would mean Steam is basically a lottery: you could do everything right and still lose. If it is false, it means something much more hopeful: <b>if you make something good, players will very likely find it</b>, so your future is mostly in your own hands.</p>
-<p>So we tested it with real data.</p>
+<section>
+  <h2>See it for yourself</h2>
+  <p class="lead">20 random games from each group, in their real proportions. Red = ignored. Tap any game to open it on Steam.</p>
+  <div class="compare">
+    <div class="panel"><h3>Top-5% pages</h3><div class="count" id="c-top"></div><div class="tiles" id="t-top"></div></div>
+    <div class="panel"><h3>Below-average pages</h3><div class="count" id="c-bot"></div><div class="tiles" id="t-bot"></div></div>
+  </div>
+  <button class="btn" id="shuffle">↻ Shuffle 20 new games</button>
+</section>
 
-<div class="answer">
-  <div class="big">Short answer: great games almost never get nothing.</div>
-  <p>A great-looking game is not guaranteed to be a hit, but it changes the odds enormously. On Steam, quality is not a lottery ticket. It is the biggest lever you control.</p>
-</div>
+<section>
+  <h2>Better page, better odds</h2>
+  <p class="lead">Every step up in page quality makes being ignored less likely and becoming a hit more likely.</p>
+  <div class="ladder" id="ladder">
+    <div class="legend"><span><i style="background:var(--red)"></i>ignored (&lt;10 reviews)</span><span><i style="background:var(--green)"></i>hit (1,000+ reviews ≈ 30k–60k sold)</span></div>
+  </div>
+</section>
 
-<div class="nums">
-  <div class="num"><b>1 in 20</b><span>games with a <b>top-5%</b> store page ended up with almost no players (fewer than 10 reviews).</span></div>
-  <div class="num"><b>1 in 2</b><span>games with a page in the <b>bottom half</b> ended up like that.</span></div>
-  <div class="num"><b>14×</b><span>more likely to reach 1,000+ reviews (roughly 30,000–60,000 copies sold) with a top-5% page: 43% vs 3%.</span></div>
-</div>
+<section>
+  <h2>Making your first game?</h2>
+  <p class="lead">37% of Steam games are someone's first. Here's how first games did, with a top-10% page versus a below-average one.</p>
+  <div class="first">
+    <div class="stat"><div class="num red">20%</div><p>got ignored</p><span class="vs">vs 60% with a below-average page</span></div>
+    <div class="stat"><div class="num green">11%</div><p>became hits</p><span class="vs">vs 2% with a below-average page</span></div>
+    <div class="stat"><div class="num">#1</div><p>predictor of success: <b>how well your previous games did.</b></p><span class="vs">An audience. You build it game by game.</span></div>
+  </div>
+</section>
 
-<h2>Your odds, depending on how good your page is</h2>
-<p>We sorted all games from the worst-looking store page to the best and split them into ten equal groups. Each bar shows what happened to the games in that group.</p>
-<div class="legend">
-  <span><i class="c0"></i>almost nobody (&lt;10 reviews · &lt;~500 sold)</span>
-  <span><i class="c1"></i>small (10–99 · ~500–5k)</span>
-  <span><i class="c2"></i>decent (100–999 · ~5k–50k)</span>
-  <span><i class="c3"></i>hit (1k–9.9k · ~50k–500k)</span>
-  <span><i class="c4"></i>big hit (10k+ · 500k+)</span>
-</div>
-<div class="bars" id="bars"></div>
-<p style="margin-top:14px">Look at the black part: in the worst group, <b>55%</b> of games reached almost nobody. In the best group, only <b>8%</b> did. Meanwhile the red parts (hits) grow from <b>2%</b> to <b>33%</b>.</p>
+<section>
+  <h2>Judge for yourself</h2>
+  <p class="lead">Every game in my sample with a top-5% page that still got ignored. Do they look great to you? Go give them a chance.</p>
+  <div class="gallery" id="gallery"></div>
+  <p class="note" id="gnote"></p>
+</section>
 
-<figure>
-  <img src="quality-vs-reviews.png" alt="Scatter plot: store-page quality rises steadily with the number of reviews">
-  <figcaption>Every dot is a game. Moving right means more players (each step is ten times more reviews). The red line is the typical page quality at each level: it climbs steadily from about 54/100 for games with zero reviews to about 75/100 for games with over 100,000.</figcaption>
-</figure>
+<section>
+  <h2>What the best pages do</h2>
+  <p class="lead">The signals most linked to finding players.</p>
+  <div class="tips">
+    <div class="tip"><b>Real key art for the capsule</b><p>The single strongest signal of all.</p></div>
+    <div class="tip"><b>A designed logo</b><p>Not a default font on top of an image.</p></div>
+    <div class="tip"><b>A description that sells a feeling</b><p>Make the player want something in the first line.</p></div>
+    <div class="tip bad"><b>No placeholder art</b><p>Unfinished-looking screenshots were the strongest negative.</p></div>
+    <div class="tip bad"><b>No screenshot as the capsule</b><p>A raw screenshot with a title on top goes with fewer players.</p></div>
+  </div>
+</section>
 
-<h2>So… hope or despair?</h2>
-<p><b>Mostly hope.</b> Here is the honest version:</p>
-<ul>
-  <li><b>A great game almost never gets nothing.</b> If your page is in the top 10%, 92% of the time you get past the "almost nobody" zone, and 1 in 3 become hits with 1,000+ reviews.</li>
-  <li><b>But great does not mean guaranteed.</b> About 1 in 4 games with a top-5% page still stayed small (under 100 reviews). Luck, timing, genre and marketing still matter.</li>
-  <li><b>The slogan:</b> a great game almost never gets <i>nothing</i>, but it doesn't always get <i>everything</i>.</li>
-</ul>
+<section>
+  <h2>The fine print</h2>
+  <details><summary>How I did it</summary><ul>
+    <li><b>The list:</b> 85,152 Steam games with their review counts (SteamSpy).</li>
+    <li><b>The sample:</b> 14,836 games, picked so that every level of success is covered, from 0 reviews to millions. Each game is weighted so results represent all of Steam.</li>
+    <li><b>The page:</b> capsule image, 4 screenshots and the descriptions, from Steam's store API.</li>
+    <li><b>The judge:</b> an AI (Jev by TypeSafe) answered 46 questions per page. The page score is the average of 29 quality ratings. It never saw review counts.</li>
+    <li><b>Testing the judge:</b> asked twice, it gave the same answers (r = 0.99). A human rated 240 pages blind, and the AI agreed on which page was better 7–8 times out of 10.</li>
+    <li><b>Success:</b> Steam hides sales, so I used reviews. Rule of thumb: 1 review ≈ 30–60 copies.</li>
+    <li>The whole AI run took 12 minutes and cost about $4.</li>
+  </ul></details>
+  <details><summary>What this doesn't prove</summary><ul>
+    <li><b>Linked isn't caused.</b> Teams with great pages often also have money and fans. Facts like who made it, price and genre predict 65% of the differences between games. Adding page quality gets to 69%, and page quality alone gets 45%.</li>
+    <li><b>Pages are today's.</b> Hits often polish their page later. Keeping only games whose art wasn't updated a year after launch weakens the link, but it stays.</li>
+    <li><b>The AI knows famous games</b> like Hades. Removing every game it recognized weakens the link a bit, but it stays.</li>
+    <li><b>It rates the page, not the fun.</b></li>
+    <li><b>Brand-new games are under-counted</b> in the list, so the real "ignored" share is probably higher, mostly for weak pages.</li>
+  </ul></details>
+  <details><summary>Numbers for nerds</summary><ul>
+    <li>Weighted Spearman, page score vs log reviews: +0.40 (capsule art alone +0.45). With the strictest controls it stays around +0.30.</li>
+    <li>Gradient boosting, 5-fold CV, weighted R² for log reviews: metadata 0.65 → metadata + page 0.69. Page only: 0.45.</li>
+  </ul></details>
+</section>
 
-<div class="box">
-  <h3>Making your first game?</h3>
-  <p>This part matters, so we checked it separately. About 37% of Steam games are the first game ever released by their developer and publisher. For them:</p>
-  <table>
-    <tr><th>First game, page quality…</th><th>Almost nobody (&lt;10)</th><th>Stayed small (&lt;100)</th><th>Hit (1,000+)</th></tr>
-    <tr><td>Bottom half</td><td class="n">60%</td><td class="n">92%</td><td class="n">2%</td></tr>
-    <tr><td>Top 10%</td><td class="n">20%</td><td class="n">66%</td><td class="n">11%</td></tr>
-  </table>
-  <p>A great first game is <b>3× less likely to vanish</b> and <b>5× more likely to become a hit</b>. But most first games, even great ones, start small. The single strongest predictor of success in our data was <b>how successful the developer's and publisher's previous games were</b>: having an audience already. Good news: that is also something you build yourself, one game, one devlog and one community post at a time.</p>
-</div>
-
-<h2>Real examples</h2>
-<h3>Great pages, huge success</h3>
-<div class="games">
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/header.jpg?t=1758127023" alt=""><div><b>Hades</b><span class="score">page score 87</span><br><small>287,116 reviews · 97% positive</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/367520/3c3489495136b26b34f8a9543c7f5645b99d388c/header.jpg?t=1776125684" alt=""><div><b>Hollow Knight</b><span class="score">page score 83</span><br><small>506,227 reviews · 96% positive</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1332010/71daca1910d664d31240b9623a495e0c0828807f/header.jpg?t=1785424330" alt=""><div><b>Stray</b><span class="score">page score 83</span><br><small>158,374 reviews · 97% positive</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/header.jpg?t=1786554168" alt=""><div><b>Stardew Valley</b><span class="score">page score 81</span><br><small>899,933 reviews · 98% positive</small></div></div>
-</div>
-
-<h3>Great pages, almost nobody came</h3>
-<p>These exist, but they are rare: only about 5% of games with a top-5% page ended up here. Notice that the few people who played them loved them. Go give them a try!</p>
-<div class="games">
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1418990/header.jpg?t=1730506388" alt=""><div><b>Unicorns on Unicycles</b><span class="score">page score 79</span><br><small>6 reviews · 100% positive · 2021</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/890480/header.jpg?t=1759963494" alt=""><div><b>Widget Satchel</b><span class="score">page score 79</span><br><small>6 reviews · 83% positive · 2019</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/568180/header.jpg?t=1547844695" alt=""><div><b>SkyKeepers</b><span class="score">page score 77</span><br><small>8 reviews · 100% positive · 2017</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1201380/header.jpg?t=1791536041" alt=""><div><b>Puck Buddies</b><span class="score">page score 76</span><br><small>9 reviews · 100% positive · 2020</small></div></div>
-</div>
-
-<h3>Plain pages, huge success anyway</h3>
-<p>The opposite also happens, almost always with a famous name behind it. A big brand can carry a plain page, which is exactly what a new developer doesn't have.</p>
-<div class="games">
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/10/header.jpg?t=1745368572" alt=""><div><b>Counter-Strike</b><span class="score">page score 45</span><br><small>170,240 reviews · from 2000</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/349040/header.jpg?t=1703080866" alt=""><div><b>Naruto Shippuden: UNS 4</b><span class="score">page score 45</span><br><small>72,488 reviews</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/221040/header.jpg?t=1768960676" alt=""><div><b>Resident Evil 6</b><span class="score">page score 53</span><br><small>52,091 reviews</small></div></div>
-  <div class="game"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/209000/header.jpg?t=1746562474" alt=""><div><b>Batman: Arkham Origins</b><span class="score">page score 49</span><br><small>45,820 reviews</small></div></div>
-</div>
-<p class="nerd">We are not showing the lowest-scoring pages by name: they are mostly tiny projects by beginners, and the point of this page is not to make fun of anyone. They typically have a capsule that is just a screenshot with text, unfinished-looking graphics and a one-line description.</p>
-
-<h2>What makes a store page look "good"?</h2>
-<p>We asked the AI dozens of specific questions about every page. These were the most linked to reaching more players:</p>
-<table>
-  <tr><th>Helps</th><th>Hurts</th></tr>
-  <tr><td>Professional capsule art (the main image), the strongest signal of all</td><td>Placeholder or unfinished-looking graphics in screenshots</td></tr>
-  <tr><td>A real, designed title logo</td><td>Using a plain screenshot as the capsule image</td></tr>
-  <tr><td>Screenshots that look polished and use your own art</td><td></td></tr>
-  <tr><td>A page that looks trustworthy and memorable, the kind you'd click on</td><td></td></tr>
-  <tr><td>A description that makes you <i>feel</i> something, with a strong first line</td><td></td></tr>
-</table>
-<p class="nerd">Careful: these are links, not proven causes (see below). But they line up with common advice from people who sell games on Steam.</p>
-
-<h2>How we did it</h2>
-<ol>
-  <li><b>The list.</b> We started from 85,152 Steam games and their review counts (from SteamSpy).</li>
-  <li><b>The sample.</b> We picked 14,836 of them so that every level of success is well covered, from zero reviews to millions. Because we picked more successful games than exist in reality, we gave each game a <i>weight</i> so the results represent all of Steam. It is like a survey that interviews extra people from small towns and then adjusts the numbers.</li>
-  <li><b>The page.</b> For each game we downloaded what you see on its Steam store page: the capsule image, 4 screenshots, and the short and long descriptions (from Steam's own store API).</li>
-  <li><b>The judge.</b> An AI model (<i>Jev</i>, by TypeSafe) answered 46 questions about each page, such as "How good is this capsule art?", "Do the screenshots show real gameplay?" and "Does the description make you feel something?". The <b>page quality score</b> (0–100) is the average of the 29 questions that rate quality. The AI never saw how many reviews a game had.</li>
-  <li><b>Designing the questions.</b> We tested the questions in 4 rounds on 60 random games each, and threw away questions where the AI gave every game the same answer or wasn't sure.</li>
-  <li><b>Checking the judge.</b> Asked the same questions twice, the AI gave almost identical answers (correlation 0.99). A human also rated 240 pages blind (no names, no review counts). When the human liked one page more than another, the AI agreed about 7 to 8 times out of 10.</li>
-  <li><b>Measuring success.</b> Steam keeps sales secret, so we used the number of reviews. A common rule of thumb: 1 review ≈ 30–60 copies sold.</li>
-</ol>
-<p class="nerd">The whole AI evaluation took 12 minutes and cost about $4.</p>
-
-<h2>Careful: what this does <i>not</i> prove</h2>
-<ul>
-  <li><b>Linked is not the same as caused.</b> Teams that make great pages often also have money, experience and fans. A computer model that predicts reviews from facts like "who made it, when, price, genre and languages" explained about 65% of the differences between games. Adding page quality raised that to about 69%. Page quality alone explained 45%. So the page matters, but a lot of its power overlaps with who is behind the game.</li>
-  <li><b>We looked at pages as they are today.</b> Successful games often polish their page after they succeed. When we only kept games whose art wasn't updated more than a year after launch, the link got weaker but stayed clearly there.</li>
-  <li><b>The AI knows some famous games.</b> It recognizes titles like Hades, which could nudge their scores up. Leaving out every game it recognized made the link a bit weaker, but it was still there.</li>
-  <li><b>The AI judges the page, not the fun.</b> Screenshots show how a game looks, not whether it is fun to play.</li>
-  <li><b>Brand-new games are under-counted.</b> Our list of Steam games misses many recent games with zero reviews. In reality the "almost nobody" group is probably even bigger, mostly among weak pages.</li>
-  <li><b>Reviews are not sales.</b> They are the best public clue, but the 30–60× rule changes with genre and price.</li>
-</ul>
-<p class="nerd">For the curious: the strength of the link between page quality and (log) reviews, measured with a weighted Spearman correlation, is +0.40 for the overall score and +0.45 for capsule art alone (0 = no link, 1 = perfect). With the strictest controls it stays around +0.30. Weighted to the 85,152 games of the full list.</p>
-
-<footer>
-  By <a href="https://dkealvaro.github.io/">Álvaro Menéndez Ros</a> · October 2026.<br>
-  Data: Steam Store API (IStoreBrowseService), <a href="https://steamspy.com/">SteamSpy</a>, AI evaluation with <a href="https://docs.typesafe.ai/">TypeSafe Jev</a>. Game images © their respective owners, shown via Steam's public CDN.
-</footer>
+<footer>By <a href="https://dkealvaro.github.io/">Álvaro Menéndez Ros</a> · October 2026 · Data: Steam Store API, SteamSpy · AI: TypeSafe Jev · Game art © its owners, via Steam's CDN.</footer>
 </div>
 
 <script>
-// Share of games (Steam-weighted) per page-quality group: <10, 10-99, 100-999, 1k-9.9k, 10k+ reviews
-const D = [
-  [55.2, 34.4, 8.3, 1.8, 0.3], [51.7, 36.1, 9.2, 2.6, 0.4], [47.9, 38.2, 10.6, 2.7, 0.5],
-  [45.3, 37.8, 13.1, 3.3, 0.6], [38.6, 41.1, 16.3, 3.5, 0.5], [33.6, 42.3, 18.3, 5.1, 0.7],
-  [31.1, 42.1, 20.8, 5.3, 0.8], [24.3, 43.1, 22.9, 8.3, 1.4], [17.2, 38.7, 28.3, 12.9, 3.0],
-  [7.8, 27.4, 31.5, 21.3, 12.1],
+const LADDER = [
+  ['Top 1%', 'best pages', 3.5, 65.0], ['Top 5%', '', 4.5, 43.4], ['Top 10%', '', 7.8, 33.4],
+  ['Top 25%', '', 14.0, 21.8], ['Top 50%', '', 22.8, 14.2], ['Bottom half', 'below average', 47.8, 3.2],
 ];
-const label = i => i === 0 ? '<b>worst 10%</b>' : i === 9 ? '<b>best 10%</b>' : `${i * 10}–${i * 10 + 10}%`;
-document.getElementById('bars').innerHTML = D.map((r, i) => {
-  const tot = r.reduce((a, b) => a + b, 0);
-  return `<div class="bar"><span class="lab">${label(i)}</span><div class="track">`
-    + r.map((v, k) => `<span class="c${k}" style="width:${v / tot * 100}%">${v >= 6 ? Math.round(v) + '%' : ''}</span>`).join('')
-    + '</div></div>';
-}).join('');
+const fmtR = r => r >= 1000 ? (r / 1000).toFixed(r >= 10000 ? 0 : 1).replace('.0', '') + 'k reviews' : r + (r === 1 ? ' review' : ' reviews');
+const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const steam = g => `https://store.steampowered.com/app/${g.id}/`;
+const pick = (a, k) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a.slice(0, k); };
+
+document.getElementById('ladder').insertAdjacentHTML('beforeend', LADDER.map(([who, sm, r, g]) =>
+  `<div class="rung"><div class="who">${who}${sm ? `<small>${sm}</small>` : ''}</div><div class="bars">`
+  + `<div class="bar"><div class="r" style="width:${r * 0.85}%"></div><span class="red">${r.toFixed(0)}%</span></div>`
+  + `<div class="bar"><div class="g" style="width:${g * 0.85}%"></div><span class="green">${g.toFixed(0)}%</span></div></div></div>`).join(''));
+
+fetch('games.json').then(r => r.json()).then(P => {
+  document.getElementById('mosaic').innerHTML = P.hero.slice(0, 40).map(g => `<img src="${g.h}" alt="" loading="eager">`).join('');
+  const tile = g => `<a class="tile${g.r < 10 ? ' ign' : ''}" href="${steam(g)}" target="_blank" rel="noopener" title="${esc(g.n)}"><img src="${g.h}" alt="${esc(g.n)}" loading="lazy"><span>${fmtR(g.r)}</span></a>`;
+  function draw() {
+    for (const [side, flop, ok, k] of [['top', P.top_flop, P.top_ok, 1], ['bot', P.bot_flop, P.bot_ok, 10]]) {
+      const games = pick([...pick(flop, k), ...pick(ok, 20 - k)], 20);
+      document.getElementById('t-' + side).innerHTML = games.map(tile).join('');
+      document.getElementById('c-' + side).innerHTML = `<b class="${k > 1 ? 'red' : 'green'}">${k} of 20</b> ignored`;
+    }
+  }
+  draw();
+  document.getElementById('shuffle').onclick = draw;
+  document.getElementById('gallery').innerHTML = P.top_flop.map(g =>
+    `<a class="card" href="${steam(g)}" target="_blank" rel="noopener"><img src="${g.h}" alt="${esc(g.n)}" loading="lazy"><div><b>${esc(g.n)}</b><small>${fmtR(g.r)} · page score ${g.q}/100${g.y ? ' · ' + g.y : ''}</small></div></a>`).join('');
+  document.getElementById('gnote').textContent = `${P.top_flop.length} games out of about 1,400 top-5% pages in the sample. Hidden: adult games and games released less than a year ago. Small games are under-represented in the sample, which is why the weighted rate across Steam is about 5%.`;
+});
 </script>
 </body>
 </html>
