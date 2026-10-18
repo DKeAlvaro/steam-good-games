@@ -4,116 +4,96 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Do great games get ignored on Steam?</title>
-<meta name="description" content="I had an AI rate the store pages of 14,836 Steam games, then checked which ones found players.">
+<meta name="description" content="I had an AI rate the store pages of 14,836 Steam games, then compared the score with how many players each game got.">
 <meta property="og:title" content="Do great games get ignored on Steam?">
-<meta property="og:description" content="14,836 Steam store pages rated by AI. Great-looking games are almost never ignored.">
+<meta property="og:description" content="14,836 Steam store pages rated by AI, against their reviews.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0e14;--panel:#131923;--panel2:#1a2230;--line:#243041;--fg:#eef2f7;--mut:#8e99ab;--red:#ff4d5e;--green:#8fdc5a;--blue:#66c0f4}
+:root{--bg:#0b0e14;--line:#202a39;--fg:#eef2f7;--mut:#8e99ab;--red:#ff4d5e;--green:#8fdc5a;--grey:#7d8aa0;--blue:#66c0f4}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-h1,h2,.big,.num{font-family:"Space Grotesk",Inter,sans-serif}
-h2{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 10px;letter-spacing:-.01em}
-.lead{color:var(--mut);margin:0 0 22px;max-width:640px}
-section{padding:64px 0;border-top:1px solid var(--line)}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.015em}
+h2{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 10px}
+.lead{color:var(--mut);margin:0 0 20px;max-width:680px}
+section{padding:72px 0 0}
 a{color:var(--blue)}
 .red{color:var(--red)}.green{color:var(--green)}
+.note{color:var(--mut);font-size:14px;margin:12px 0 0;max-width:760px}
 
 /* hero */
-.hero{position:relative;overflow:hidden;padding:0;border:0;min-height:88vh;display:flex;align-items:center}
+.hero{position:relative;overflow:hidden;padding:0}
 .mosaic{position:absolute;inset:-14% -10%;display:grid;grid-template-columns:repeat(8,1fr);gap:10px;transform:rotate(-8deg);opacity:.7}
 .mosaic img{width:100%;aspect-ratio:460/215;object-fit:cover;border-radius:6px;display:block}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,14,20,.97) 0%,rgba(11,14,20,.88) 45%,rgba(11,14,20,.45) 100%),linear-gradient(180deg,rgba(11,14,20,0) 60%,var(--bg) 100%)}
-.hero .wrap{position:relative;z-index:1;padding-top:60px;padding-bottom:60px}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,14,20,.97) 0%,rgba(11,14,20,.88) 45%,rgba(11,14,20,.45) 100%),linear-gradient(180deg,rgba(11,14,20,0) 55%,var(--bg) 100%)}
+.hero .wrap{position:relative;z-index:1;padding-top:13vh;padding-bottom:13vh}
 .kicker{font:600 13px/1 Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-h1{font-size:clamp(42px,8vw,92px);line-height:.98;margin:16px 0 18px;letter-spacing:-.025em;max-width:900px}
-.sub{font-size:clamp(17px,2.2vw,21px);color:#c7cfdb;max-width:640px;margin:0 0 30px}
-.answer{display:inline-block;background:var(--fg);color:var(--bg);padding:14px 22px;border-radius:12px;font:700 clamp(22px,3vw,30px)/1.2 "Space Grotesk"}
-.answer small{display:block;font:500 15px/1.4 Inter;color:#3a4352;margin-top:4px}
+h1{font-size:clamp(42px,8vw,92px);line-height:.98;margin:16px 0 18px;max-width:880px}
+.sub{font-size:clamp(17px,2.2vw,21px);color:#c7cfdb;max-width:620px;margin:0 0 26px}
+.answer{font:700 clamp(26px,3.6vw,40px)/1.15 "Space Grotesk";margin:0}
+.answer small{display:block;font:400 17px/1.5 Inter;color:var(--mut);margin-top:6px}
 
-/* duo */
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px}
-.stat .num{font-size:clamp(64px,10vw,112px);font-weight:700;line-height:.9;letter-spacing:-.03em}
-.stat p{margin:12px 0 0;font-size:18px}
-.stat p b{color:var(--fg)}
-.note{color:var(--mut);font-size:14px;margin-top:14px}
-
-/* tiles */
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
-.panel h3{margin:0 0 4px;font:700 20px "Space Grotesk"}
-.panel .count{color:var(--mut);font-size:15px;margin-bottom:14px}
-.panel .count b{font-size:18px}
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.tile{position:relative;display:block;border-radius:8px;overflow:hidden;background:#1d2533;text-decoration:none;color:var(--fg);outline:2px solid transparent;transition:transform .12s}
-.tile:hover{transform:translateY(-2px)}
-.tile img{width:100%;aspect-ratio:460/215;object-fit:cover;display:block}
-.tile span{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 4px;font:600 11px/1.1 Inter;background:linear-gradient(transparent,rgba(0,0,0,.85));text-align:right}
-.tile.ign{outline-color:var(--red)}
-.tile.ign span{color:#fff;background:linear-gradient(transparent,rgba(160,20,35,.95))}
-.tile.ign:before{content:"IGNORED";position:absolute;top:5px;left:5px;z-index:1;background:var(--red);color:#fff;font:700 9px/1 Inter;letter-spacing:.08em;padding:3px 5px;border-radius:3px}
-.btn{background:var(--fg);color:var(--bg);border:0;border-radius:999px;padding:11px 20px;font:700 15px Inter;cursor:pointer;margin-top:18px}
-.btn:hover{background:var(--blue)}
+/* charts */
+.chart{position:relative;width:100%}
+canvas{display:block;width:100%}
+.keys{display:flex;gap:6px 22px;flex-wrap:wrap;font-size:14px;color:var(--mut);margin:0 0 10px}
+.keys i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+.tip{position:absolute;pointer-events:none;width:230px;background:#05070b;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13px;line-height:1.35;display:none;z-index:5}
+.tip img{width:100%;aspect-ratio:460/215;object-fit:cover;display:block;background:#1d2533}
+.tip div{padding:7px 9px}
+.tip b{display:block}
+svg text{font-family:Inter,sans-serif}
 
 /* ladder */
-.ladder{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
-.legend{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--mut);margin-bottom:14px}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px}
-.rung{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
-.rung:first-of-type{border-top:0}
-.rung .who{font:700 16px "Space Grotesk"}
-.rung .who small{display:block;font:500 12px Inter;color:var(--mut)}
+.ladder{max-width:820px}
+.rung{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.rung:first-child{border-top:0}
+.who{font:700 17px "Space Grotesk"}
+.who small{display:block;font:500 12px Inter;color:var(--mut)}
 .bars{display:grid;gap:5px}
-.bar{display:flex;align-items:center;gap:8px;font:600 13px Inter}
-.bar div{height:14px;border-radius:4px;min-width:3px}
-.bar .r{background:var(--red)}.bar .g{background:var(--green)}
+.bar{display:flex;align-items:center;gap:9px;font:600 13px Inter}
+.bar div{height:14px;border-radius:3px;min-width:3px}
 
-/* first game */
-.first{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.first .stat .num{font-size:clamp(44px,6vw,68px)}
-.vs{color:var(--mut);font:500 15px Inter;display:block;margin-top:6px}
+/* browse */
+.tabs{display:flex;flex-wrap:wrap;gap:4px 22px;margin:0 0 14px;font:600 16px "Space Grotesk"}
+.tabs button{background:none;border:0;padding:4px 0;color:var(--mut);font:inherit;cursor:pointer;border-bottom:2px solid transparent}
+.tabs button.on{color:var(--fg);border-bottom-color:var(--blue)}
+.tabs .shuffle{color:var(--blue);margin-left:auto}
+.games{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 14px}
+.game{text-decoration:none;color:var(--fg);display:block;min-width:0}
+.game img{width:100%;aspect-ratio:460/215;object-fit:cover;display:block;border-radius:6px;background:#1d2533;outline:2px solid transparent;outline-offset:2px}
+.game.ign img{outline-color:var(--red)}
+.game b{display:block;font-size:14px;line-height:1.3;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game small{color:var(--mut);font-size:13px}
+.game.ign small .r{color:var(--red);font-weight:600}
+.count{color:var(--mut);font-size:15px;margin:0 0 16px}
 
-/* gallery */
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--fg);transition:border-color .12s}
-.card:hover{border-color:var(--blue)}
-.card img{width:100%;aspect-ratio:460/215;object-fit:cover;display:block}
-.card div{padding:8px 10px 10px;font-size:14px;line-height:1.3}
-.card b{display:block;margin-bottom:3px}
-.card small{color:var(--mut)}
-
-/* tips */
-.tips{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-@media (max-width:1000px){.tips{grid-template-columns:repeat(2,1fr)}}
-.tip{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-.tip b{display:block;font:700 18px/1.25 "Space Grotesk";margin-bottom:6px}
-.tip p{margin:0;color:var(--mut);font-size:15px}
-.tip.bad b{color:var(--red)}
-
-details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px 18px;margin:10px 0}
-summary{cursor:pointer;font:700 17px "Space Grotesk";padding:12px 0}
-details ul{color:#c7cfdb;font-size:15px;padding-left:20px}
-details li{margin-bottom:8px}
-footer{border-top:1px solid var(--line);padding:30px 0 60px;color:var(--mut);font-size:14px}
+/* questions */
+.qs h3{font-size:20px;margin:30px 0 8px}
+.qs h3 span{color:var(--mut);font:500 14px Inter;margin-left:6px}
+.qs ol{margin:0;padding-left:24px;columns:2;column-gap:44px}
+.qs li{break-inside:avoid;margin:0 0 12px;color:var(--mut)}
+.qs li p{margin:0;color:var(--fg);font-size:15px;line-height:1.45}
+.qs li small{font-size:12.5px;line-height:1.4;display:block}
+code{font:500 .92em 'IBM Plex Mono',ui-monospace,monospace;color:var(--blue)}
+.qs .ctx{color:var(--mut);margin:0 0 6px}
+.qs blockquote{margin:0 0 8px;padding:0 0 0 16px;border-left:2px solid var(--line);color:#c7cfdb;font-size:15px;max-width:760px}
+.prose{max-width:720px}
+.prose p{color:#c7cfdb;margin:0 0 16px}
+img.full{width:100%;display:block}
+footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;color:var(--mut);font-size:14px}
 
 @media (max-width:760px){
   body{font-size:16px}
-  section{padding:46px 0}
-  .duo,.compare,.first{grid-template-columns:1fr}
+  section{padding-top:56px}
   .mosaic{grid-template-columns:repeat(4,1fr)}
-  .hero{min-height:auto}
   .hero:after{background:linear-gradient(180deg,rgba(11,14,20,.8),rgba(11,14,20,.94) 40%,var(--bg))}
-  .tips{grid-template-columns:1fr}
-  .rung{grid-template-columns:84px 1fr;gap:10px}
-  .tiles{grid-template-columns:repeat(4,1fr);gap:5px}
-  .tile span{font-size:9px;padding:10px 3px 2px}
-  .tile.ign:before{font-size:7px;padding:2px 3px}
-  .gallery{grid-template-columns:repeat(2,1fr)}
+  .rung{grid-template-columns:92px 1fr;gap:10px}
+  .games{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .qs ol{columns:1}
+  .tip{width:190px}
 }
 </style>
 </head>
@@ -124,126 +104,280 @@ footer{border-top:1px solid var(--line);padding:30px 0 60px;color:var(--mut);fon
   <div class="wrap">
     <div class="kicker">14,836 Steam games · rated by AI</div>
     <h1>Do great games get ignored on Steam?</h1>
-    <p class="sub">I had an AI rate the store page of 14,836 Steam games: the art, the screenshots, the description. Then I checked which games actually found players.</p>
-    <div class="answer">Almost never.<small>Great-looking games aren't guaranteed a hit. But they're very rarely ignored.</small></div>
+    <p class="sub">I had an AI rate the store page of 14,836 Steam games: capsule art, screenshots and description. Then I compared that score with how many players each game got.</p>
+    <p class="answer">Short answer: <span class="green">almost never.</span><small>The ignored games are overwhelmingly the ones with weak pages.</small></p>
   </div>
 </section>
 
 <div class="wrap">
 
 <section>
-  <div class="duo">
-    <div class="stat"><div class="num red">48%</div><p>of games with a <b>below-average</b> store page got ignored.</p></div>
-    <div class="stat"><div class="num green">5%</div><p>of games with a <b>top-5%</b> store page got ignored. That's 1 in 20.</p></div>
-  </div>
-  <p class="note">Ignored = fewer than 10 Steam reviews, roughly under 500 copies sold. Percentages are weighted to represent all 85,152 games in the list.</p>
+  <h2>Page quality vs. reviews</h2>
+  <p class="lead">Every dot is one game. Up means a better page score from the AI. Right means more Steam reviews, each step ten times more. Hover or tap a dot to see the game.</p>
+  <div class="keys"><span><i style="background:var(--red)"></i>ignored (under 10 reviews)</span><span><i style="background:var(--grey)"></i>10 to 999 reviews</span><span><i style="background:var(--green)"></i>hit (1,000+)</span><span><i style="background:#fff;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>typical page score at each level</span></div>
+  <div class="chart" id="scatterBox"><canvas id="scatter"></canvas><div class="tip" id="tip"></div></div>
+  <p class="note">The sample includes more successful games than Steam has, so that every level is covered. The charts below are weighted back to represent all 85,152 games.</p>
 </section>
 
 <section>
-  <h2>See it for yourself</h2>
-  <p class="lead">20 random games from each group, in their real proportions. Red = ignored. Tap any game to open it on Steam.</p>
-  <div class="compare">
-    <div class="panel"><h3>Top-5% pages</h3><div class="count" id="c-top"></div><div class="tiles" id="t-top"></div></div>
-    <div class="panel"><h3>Below-average pages</h3><div class="count" id="c-bot"></div><div class="tiles" id="t-bot"></div></div>
-  </div>
-  <button class="btn" id="shuffle">↻ Shuffle 20 new games</button>
+  <h2>Ignored games have the worst pages</h2>
+  <p class="lead">How page scores are spread out within each group. The ignored games sit to the left, the hits to the right.</p>
+  <div class="keys"><span><i style="background:var(--red)"></i>ignored</span><span><i style="background:var(--grey)"></i>10–999 reviews</span><span><i style="background:var(--green)"></i>hits</span></div>
+  <div class="chart" id="dist"></div>
 </section>
 
 <section>
   <h2>Better page, better odds</h2>
-  <p class="lead">Every step up in page quality makes being ignored less likely and becoming a hit more likely.</p>
-  <div class="ladder" id="ladder">
-    <div class="legend"><span><i style="background:var(--red)"></i>ignored (&lt;10 reviews)</span><span><i style="background:var(--green)"></i>hit (1,000+ reviews ≈ 30k–60k sold)</span></div>
-  </div>
+  <p class="lead">Games grouped by where their page score ranks on Steam. For each group, the red bar is the share that got ignored and the green bar the share that became a hit with 1,000+ reviews.</p>
+  <div class="ladder" id="ladder"></div>
 </section>
 
 <section>
-  <h2>Making your first game?</h2>
-  <p class="lead">37% of Steam games are someone's first. Here's how first games did, with a top-10% page versus a below-average one.</p>
-  <div class="first">
-    <div class="stat"><div class="num red">20%</div><p>got ignored</p><span class="vs">vs 60% with a below-average page</span></div>
-    <div class="stat"><div class="num green">11%</div><p>became hits</p><span class="vs">vs 2% with a below-average page</span></div>
-    <div class="stat"><div class="num">#1</div><p>predictor of success: <b>how well your previous games did.</b></p><span class="vs">An audience. You build it game by game.</span></div>
-  </div>
+  <h2>Browse the games by level</h2>
+  <p class="lead">24 random games from each level, drawn in their real proportions. A red outline means the game got ignored. Click any game to open it on Steam.</p>
+  <div class="tabs" id="tabs"></div>
+  <p class="count" id="count"></p>
+  <div class="games" id="games"></div>
 </section>
 
 <section>
-  <h2>Judge for yourself</h2>
-  <p class="lead">Every game in my sample with a top-5% page that still got ignored. Do they look great to you? Go give them a chance.</p>
-  <div class="gallery" id="gallery"></div>
-  <p class="note" id="gnote"></p>
+  <h2>What actually drives reviews</h2>
+  <p class="lead">A machine-learning model predicted every game's reviews from its page (the AI ratings, in blue) and from facts about the game (in white). These are its Shapley values: each dot is a game, and the further right it sits, the more that feature pushed its reviews up. Red dots are games with a high value for that feature.</p>
+  <img class="full" src="shap.png" alt="Shapley values of the reviews model">
+  <p class="note">Who is behind the game matters most: how many reviews the developer's and publisher's other games have. Right after come the page signals: capsule art quality, whether players would click it, and whether it looks trustworthy. Together, the page ratings make up about a third of what the model uses.</p>
 </section>
 
-<section>
-  <h2>What the best pages do</h2>
-  <p class="lead">The signals most linked to finding players.</p>
-  <div class="tips">
-    <div class="tip"><b>Real key art for the capsule</b><p>The single strongest signal of all.</p></div>
-    <div class="tip"><b>A designed logo</b><p>Not a default font on top of an image.</p></div>
-    <div class="tip"><b>A description that sells a feeling</b><p>Make the player want something in the first line.</p></div>
-    <div class="tip bad"><b>No placeholder art</b><p>Unfinished-looking screenshots were the strongest negative.</p></div>
-    <div class="tip bad"><b>No screenshot as the capsule</b><p>A raw screenshot with a title on top goes with fewer players.</p></div>
-  </div>
+<section class="qs">
+  <h2>The 46 questions the AI answered</h2>
+  <p class="lead">Every page got exactly these questions, word for word. <code>header</code> is the capsule image, <code>screenshots</code> the four screenshots, <code>short_description</code> and <code>description</code> the store texts. The page score is the average of the 29 ratings marked "counts toward the page score". The AI never saw any review count.</p>
+<!--QUESTIONS-->
+<p class="ctx">Every request also started with this instruction:</p><blockquote>This is the Steam store page of a video game. <code>header</code> is the capsule image shown in store lists, <code>screenshots</code> are its store screenshots, <code>short_description</code> and <code>description</code> are its store texts. Judge presentation craft only. Ignore awards, press quotes, review scores and sales claims; they must not raise any rating.</blockquote>
+<h3>The capsule image <span>11</span></h3>
+<ol>
+<li><p>Rate the overall quality of <code>header</code> as capsule art for a game store.</p><small>rating · counts toward the page score: Amateur or placeholder → Weak, clearly low effort → Competent but generic → Good, professional → Top-tier key art</small></li>
+<li><p>Is <code>header</code> just an in-game screenshot with a title on top, rather than dedicated key art?</p><small>yes / no</small></li>
+<li><p>Rate the color and contrast of <code>header</code>.</p><small>rating · counts toward the page score: Dull, muddy or garish → Weak → Acceptable → Appealing → Striking</small></li>
+<li><p>Rate the typography / logo design of the title in <code>header</code>.</p><small>rating · counts toward the page score: No title or default font → Basic → Decent → Designed logo → Iconic, professional logo</small></li>
+<li><p>Among dozens of capsules in a Steam list, how much would <code>header</code> stand out?</p><small>rating · counts toward the page score: Invisible → Barely → Somewhat → Clearly → Immediately grabs attention</small></li>
+<li><p>What is the art style of <code>header</code>?</p><small>pick one: Pixel art · 3D render · Hand-drawn or painted illustration · Anime / manga style · Photograph or live action · Mostly text or logo on a plain background · Other</small></li>
+<li><p>How readable would the title in <code>header</code> be when shown as a small thumbnail (about 230x90 px)?</p><small>rating · counts toward the page score: Unreadable or no title → Hard to read → Readable with effort → Readable → Instantly readable</small></li>
+<li><p>How quickly can you tell the genre of the game from <code>header</code> alone?</p><small>rating · counts toward the page score: Impossible to tell → Hard to tell → With some effort → Quickly → Instantly</small></li>
+<li><p>Does <code>header</code> prominently feature a character or creature?</p><small>yes / no</small></li>
+<li><p>What is the dominant mood of <code>header</code>?</p><small>pick one: Dark or horror · Epic or heroic · Cute or cozy · Bright and fun · Calm or melancholic · Neutral, no clear mood</small></li>
+<li><p>How well does <code>header</code> match the game actually shown in <code>screenshots</code>?</p><small>rating · counts toward the page score: Misleading, a different game → Loosely → Somewhat → Well → Perfectly</small></li>
+</ol>
+<h3>The screenshots <span>11</span></h3>
+<ol>
+<li><p>Rate the visual quality and polish of the game shown in <code>screenshots</code>.</p><small>rating · counts toward the page score: Very crude → Rough → Average → Polished → Stunning</small></li>
+<li><p>Do <code>screenshots</code> mostly show actual gameplay (not menus, concept art, logos or text slides)?</p><small>yes / no</small></li>
+<li><p>How varied are <code>screenshots</code> (different scenes, mechanics, situations)?</p><small>rating · counts toward the page score: All nearly identical → Little variety → Some variety → Varied → Very varied, shows the whole game</small></li>
+<li><p>From <code>screenshots</code> alone, how well can you understand what the player actually does?</p><small>rating · counts toward the page score: No idea → Vague → Roughly → Clearly → Instantly obvious</small></li>
+<li><p>How clean and readable is the in-game UI in <code>screenshots</code>?</p><small>rating · counts toward the page score: Unreadable or broken → Messy → Acceptable → Clean → Excellent</small></li>
+<li><p>How consistent is the art direction across <code>screenshots</code>?</p><small>rating · counts toward the page score: Mismatched assets → Inconsistent → Mostly consistent → Consistent → Strong unified style</small></li>
+<li><p>What production scale do <code>screenshots</code> suggest?</p><small>pick one: Hobbyist or student project · Low-budget indie · Polished indie · AA studio · AAA studio</small></li>
+<li><p>What kind of graphics does the game in <code>screenshots</code> have?</p><small>pick one: Pixel art · 2D illustrated / hand-drawn · Low-poly 3D · Stylized 3D · Realistic 3D · Mostly text or UI · Visual novel</small></li>
+<li><p>How original are the art assets in <code>screenshots</code>?</p><small>rating · counts toward the page score: Obvious generic store-bought assets → Mostly generic → Mixed → Mostly custom → Fully custom and distinctive</small></li>
+<li><p>How technically clean are the images in <code>screenshots</code> (resolution, no stretching, no compression artifacts)?</p><small>rating · counts toward the page score: Very low resolution or broken → Poor → Acceptable → Clean → Crisp and high quality</small></li>
+<li><p>Do <code>screenshots</code> show placeholder, unfinished or debug graphics?</p><small>yes / no</small></li>
+</ol>
+<h3>The description <span>13</span></h3>
+<ol>
+<li><p>How well does the start of <code>short_description</code> and <code>description</code> hook the reader?</p><small>rating · counts toward the page score: No hook, confusing → Weak → Okay → Strong → Irresistible</small></li>
+<li><p>After reading <code>short_description</code> and <code>description</code>, how clear is what you actually do in the game?</p><small>rating · counts toward the page score: No idea → Vague → Roughly clear → Clear → Crystal clear</small></li>
+<li><p>How clear and distinctive is what makes this game different from others, per <code>description</code>?</p><small>rating · counts toward the page score: Nothing distinctive → Generic → Somewhat distinctive → Clear unique angle → Very original and well sold</small></li>
+<li><p>Rate the writing quality of <code>description</code> (grammar, fluency, concision).</p><small>rating · counts toward the page score: Broken, many errors → Poor → Acceptable → Good → Professional copywriting</small></li>
+<li><p>Rate the structure and formatting of <code>description</code> (headings, short paragraphs, lists).</p><small>rating · counts toward the page score: Wall of text or almost empty → Poor → Acceptable → Well structured → Excellent</small></li>
+<li><p>Does <code>description</code> include a clear list of features?</p><small>yes / no</small></li>
+<li><p>How generic or cliché is <code>description</code>?</p><small>rating · counts toward the page score: Pure cliché → Mostly generic → Mixed → Mostly fresh → Fresh and specific</small></li>
+<li><p>Does <code>description</code> mention awards, press quotes, review scores or famous previous games?</p><small>yes / no</small></li>
+<li><p>What is the tone of <code>description</code>?</p><small>pick one: Hype marketing · Plain and informative · Personal / developer voice · Humorous · Story or lore heavy · Almost nothing written</small></li>
+<li><p>How concrete is <code>description</code> (named mechanics, numbers, specifics) versus vague adjectives?</p><small>rating · counts toward the page score: Only vague adjectives → Mostly vague → Mixed → Mostly concrete → Very concrete</small></li>
+<li><p>How well does <code>description</code> evoke a feeling or a fantasy the player wants?</p><small>rating · counts toward the page score: Not at all → Weakly → Somewhat → Well → Very strongly</small></li>
+<li><p>Does <code>description</code> clearly name the game&#x27;s genre?</p><small>yes / no</small></li>
+<li><p>Does the first sentence of <code>short_description</code> say what kind of game it is?</p><small>yes / no</small></li>
+</ol>
+<h3>The whole page <span>11</span></h3>
+<ol>
+<li><p>Rate the overall quality of this store page as a whole (images and text).</p><small>rating · counts toward the page score: Amateur → Weak → Average → Professional → Outstanding</small></li>
+<li><p>How well do <code>header</code>, <code>screenshots</code> and <code>description</code> fit together as one consistent pitch?</p><small>rating · counts toward the page score: Contradictory → Loose → Okay → Coherent → Perfectly aligned</small></li>
+<li><p>How likely would a typical Steam user be to click on and wishlist this game based on this page?</p><small>rating · counts toward the page score: Very unlikely → Unlikely → Maybe → Likely → Very likely</small></li>
+<li><p>Who most likely made this game, judging by the page?</p><small>pick one: A solo hobbyist · A dedicated solo developer · A small indie team · An established indie studio · A large AA/AAA studio</small></li>
+<li><p>How broad is this game&#x27;s likely audience?</p><small>rating: Tiny niche → Niche → Moderate → Broad → Mass market</small></li>
+<li><p>How legitimate and trustworthy does this game look (versus a cash grab or scam)?</p><small>rating · counts toward the page score: Looks like a scam → Doubtful → Neutral → Trustworthy → Clearly a serious product</small></li>
+<li><p>How original is the game&#x27;s concept?</p><small>rating · counts toward the page score: Pure clone → Derivative → Some twist → Original → Highly original</small></li>
+<li><p>How memorable is this game after seeing the page once?</p><small>rating · counts toward the page score: Forgettable → Barely → Somewhat → Memorable → Unforgettable</small></li>
+<li><p>Do you recognize this specific game as a well-known title?</p><small>yes / no</small></li>
+<li><p>Within 3 seconds of seeing <code>header</code> and <code>short_description</code>, how well would a user grasp the game&#x27;s concept?</p><small>rating · counts toward the page score: Not at all → Barely → Partly → Well → Completely</small></li>
+<li><p>How crowded is this game&#x27;s genre on Steam?</p><small>rating: Almost no competition → Little → Moderate → Crowded → Extremely saturated</small></li>
+</ol>
+<!--/QUESTIONS-->
 </section>
 
-<section>
-  <h2>The fine print</h2>
-  <details><summary>How I did it</summary><ul>
-    <li><b>The list:</b> 85,152 Steam games with their review counts (SteamSpy).</li>
-    <li><b>The sample:</b> 14,836 games, picked so that every level of success is covered, from 0 reviews to millions. Each game is weighted so results represent all of Steam.</li>
-    <li><b>The page:</b> capsule image, 4 screenshots and the descriptions, from Steam's store API.</li>
-    <li><b>The judge:</b> an AI (Jev by TypeSafe) answered 46 questions per page. The page score is the average of 29 quality ratings. It never saw review counts.</li>
-    <li><b>Testing the judge:</b> asked twice, it gave the same answers (r = 0.99). A human rated 240 pages blind, and the AI agreed on which page was better 7–8 times out of 10.</li>
-    <li><b>Success:</b> Steam hides sales, so I used reviews. Rule of thumb: 1 review ≈ 30–60 copies.</li>
-    <li>The whole AI run took 12 minutes and cost about $4.</li>
-  </ul></details>
-  <details><summary>What this doesn't prove</summary><ul>
-    <li><b>Linked isn't caused.</b> Teams with great pages often also have money and fans. Facts like who made it, price and genre predict 65% of the differences between games. Adding page quality gets to 69%, and page quality alone gets 45%.</li>
-    <li><b>Pages are today's.</b> Hits often polish their page later. Keeping only games whose art wasn't updated a year after launch weakens the link, but it stays.</li>
-    <li><b>The AI knows famous games</b> like Hades. Removing every game it recognized weakens the link a bit, but it stays.</li>
-    <li><b>It rates the page, not the fun.</b></li>
-    <li><b>Brand-new games are under-counted</b> in the list, so the real "ignored" share is probably higher, mostly for weak pages.</li>
-  </ul></details>
-  <details><summary>Numbers for nerds</summary><ul>
-    <li>Weighted Spearman, page score vs log reviews: +0.40 (capsule art alone +0.45). With the strictest controls it stays around +0.30.</li>
-    <li>Gradient boosting, 5-fold CV, weighted R² for log reviews: metadata 0.65 → metadata + page 0.69. Page only: 0.45.</li>
-  </ul></details>
+<section class="prose">
+  <h2>How it was done</h2>
+  <p>I started from a list of 85,152 Steam games and their review counts, from SteamSpy. I picked 14,836 of them so that every level of success is covered, from zero reviews to millions, and weighted them back so the numbers represent all of Steam.</p>
+  <p>For each game I took what a player sees on its store page: the capsule image, four screenshots and the description, from Steam's store API. An AI model, Jev by TypeSafe, answered the 46 questions above about each page. Asked the same questions twice, it gave practically the same answers (r = 0.99). On 240 pages that I rated blind myself, it agreed with me on which page was better 7 to 8 times out of 10.</p>
+  <p>Steam keeps sales private, so success is measured in reviews. One review is roughly 30 to 60 copies sold. "Ignored" means fewer than 10 reviews.</p>
+  <h2 style="margin-top:44px">What this does not prove</h2>
+  <p>It shows a link, not a cause. Teams that make great pages often also have money, experience and fans, which is why the model above puts the developer's track record first.</p>
+  <p>Pages were measured as they are today, and successful games often polish their page after launch. For pages that were never updated a year after release, the link is weaker but still there. The AI also recognizes some famous games, and it judges how a game is presented, not whether it is fun. Brand-new games with zero reviews are under-counted in the list.</p>
+  <p class="note">Weighted Spearman correlation between page score and reviews: +0.40, and about +0.30 with the strictest controls. Model R² for reviews: facts only 0.65, facts plus page 0.69, page only 0.45.</p>
 </section>
 
 <footer>By <a href="https://dkealvaro.github.io/">Álvaro Menéndez Ros</a> · October 2026 · Data: Steam Store API, SteamSpy · AI: TypeSafe Jev · Game art © its owners, via Steam's CDN.</footer>
 </div>
 
 <script>
-const LADDER = [
-  ['Top 1%', 'best pages', 3.5, 65.0], ['Top 5%', '', 4.5, 43.4], ['Top 10%', '', 7.8, 33.4],
-  ['Top 25%', '', 14.0, 21.8], ['Top 50%', '', 22.8, 14.2], ['Bottom half', 'below average', 47.8, 3.2],
-];
-const fmtR = r => r >= 1000 ? (r / 1000).toFixed(r >= 10000 ? 0 : 1).replace('.0', '') + 'k reviews' : r + (r === 1 ? ' review' : ' reviews');
+const CDN = (id, h) => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${id}/${h ? h + '/' : ''}header.jpg`;
+const steam = id => `https://store.steampowered.com/app/${id}/`;
 const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
-const steam = g => `https://store.steampowered.com/app/${g.id}/`;
-const pick = (a, k) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a.slice(0, k); };
+const COL = r => r < 10 ? '#ff4d5e' : r >= 1000 ? '#8fdc5a' : '#7d8aa0';
+const L = r => Math.log10(r + 1);
+const hash = id => (Math.imul(id, 2654435761) >>> 0) / 4294967296;
 
-document.getElementById('ladder').insertAdjacentHTML('beforeend', LADDER.map(([who, sm, r, g]) =>
-  `<div class="rung"><div class="who">${who}${sm ? `<small>${sm}</small>` : ''}</div><div class="bars">`
-  + `<div class="bar"><div class="r" style="width:${r * 0.85}%"></div><span class="red">${r.toFixed(0)}%</span></div>`
-  + `<div class="bar"><div class="g" style="width:${g * 0.85}%"></div><span class="green">${g.toFixed(0)}%</span></div></div></div>`).join(''));
-
-fetch('games.json').then(r => r.json()).then(P => {
-  document.getElementById('mosaic').innerHTML = P.hero.slice(0, 40).map(g => `<img src="${g.h}" alt="" loading="eager">`).join('');
-  const tile = g => `<a class="tile${g.r < 10 ? ' ign' : ''}" href="${steam(g)}" target="_blank" rel="noopener" title="${esc(g.n)}"><img src="${g.h}" alt="${esc(g.n)}" loading="lazy"><span>${fmtR(g.r)}</span></a>`;
-  function draw() {
-    for (const [side, flop, ok, k] of [['top', P.top_flop, P.top_ok, 1], ['bot', P.bot_flop, P.bot_ok, 10]]) {
-      const games = pick([...pick(flop, k), ...pick(ok, 20 - k)], 20);
-      document.getElementById('t-' + side).innerHTML = games.map(tile).join('');
-      document.getElementById('c-' + side).innerHTML = `<b class="${k > 1 ? 'red' : 'green'}">${k} of 20</b> ignored`;
-    }
-  }
-  draw();
-  document.getElementById('shuffle').onclick = draw;
-  document.getElementById('gallery').innerHTML = P.top_flop.map(g =>
-    `<a class="card" href="${steam(g)}" target="_blank" rel="noopener"><img src="${g.h}" alt="${esc(g.n)}" loading="lazy"><div><b>${esc(g.n)}</b><small>${fmtR(g.r)} · page score ${g.q}/100${g.y ? ' · ' + g.y : ''}</small></div></a>`).join('');
-  document.getElementById('gnote').textContent = `${P.top_flop.length} games out of about 1,400 top-5% pages in the sample. Hidden: adult games and games released less than a year ago. Small games are under-represented in the sample, which is why the weighted rate across Steam is about 5%.`;
+fetch('data.json').then(r => r.json()).then(D => {
+  // rows: [appid, page score x10, reviews, weight x100, adult, year, name, header hash]
+  const G = D.games.map(g => ({id: g[0], s: g[1] / 10, r: g[2], w: g[3] / 100, adult: g[4], y: g[5], n: g[6], h: g[7]}));
+  const W = G.reduce((a, g) => a + g.w, 0);
+  let acc = 0;
+  for (const g of G.slice().sort((a, b) => a.s - b.s)) { acc += g.w; g.p = acc / W; }  // Steam-weighted percentile
+  hero(G); scatter(G); dist(G); ladderAndBrowse(G);
 });
+
+function hero(G) {
+  const hits = G.filter(g => !g.adult && g.r >= 30000).sort((a, b) => b.s - a.s).slice(0, 40);
+  document.getElementById('mosaic').innerHTML = hits.map(g => `<img src="${CDN(g.id, g.h)}" alt="">`).join('');
+}
+
+function scatter(G) {
+  const box = document.getElementById('scatterBox'), cv = document.getElementById('scatter'), tip = document.getElementById('tip');
+  const XMAX = L(1e7), Y0 = 15, Y1 = 92;
+  // whole-number review counts are spread a little sideways so they don't stack in one column
+  const order = G.slice().sort((a, b) => (a.r >= 1000) - (b.r >= 1000) || (b.r < 10) - (a.r < 10));
+  let grid = new Map();
+  function draw() {
+    const Wd = box.clientWidth, H = Math.max(340, Math.min(580, Wd * 0.6)), dpr = devicePixelRatio || 1;
+    cv.width = Wd * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+    const c = cv.getContext('2d'); c.scale(dpr, dpr);
+    const m = {l: 34, r: 8, t: 22, b: 28};
+    const x = r => m.l + L(r) / XMAX * (Wd - m.l - m.r);
+    const y = s => H - m.b - (s - Y0) / (Y1 - Y0) * (H - m.t - m.b);
+    c.strokeStyle = '#202a39'; c.fillStyle = '#8e99ab'; c.font = '11px Inter'; c.lineWidth = 1;
+    for (const s of [20, 30, 40, 50, 60, 70, 80, 90]) { c.beginPath(); c.moveTo(m.l, y(s)); c.lineTo(Wd - m.r, y(s)); c.stroke(); c.fillText(s, 6, y(s) + 4); }
+    c.textAlign = 'center';
+    for (const [v, t] of [[0, '0'], [10, '10'], [100, '100'], [1000, '1k'], [1e4, '10k'], [1e5, '100k'], [1e6, '1M']]) c.fillText(t, x(v), H - 8);
+    grid = new Map();
+    const rad = Wd < 600 ? 1.3 : 1.7;
+    c.globalAlpha = 0.55;
+    for (const g of order) {
+      const rj = g.r < 300 ? Math.max(0, g.r + hash(g.id) * 0.9 - 0.45) : g.r;
+      const px = x(rj), py = y(g.s);
+      c.fillStyle = COL(g.r); c.beginPath(); c.arc(px, py, rad, 0, 6.283); c.fill();
+      const k = (px >> 3) + ',' + (py >> 3); if (!grid.has(k)) grid.set(k, []); grid.get(k).push([px, py, g]);
+    }
+    c.globalAlpha = 1;
+    // Steam-weighted median and middle half of page scores per review band
+    const bins = [0, 1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 100000, 1e8], line = [];
+    for (let i = 0; i < bins.length - 1; i++) {
+      const sel = G.filter(g => g.r >= bins[i] && g.r < bins[i + 1]).sort((a, b) => a.s - b.s);
+      const tot = sel.reduce((a, g) => a + g.w, 0); let cum = 0; const q = {};
+      for (const g of sel) { cum += g.w; for (const p of [.25, .5, .75]) if (q[p] == null && cum / tot >= p) q[p] = g.s; }
+      line.push([Math.sqrt((bins[i] + 1) * bins[i + 1]) - 1, q[.25], q[.5], q[.75]]);
+    }
+    c.fillStyle = 'rgba(255,255,255,.09)'; c.beginPath();
+    line.forEach(([r, a], i) => i ? c.lineTo(x(r), y(a)) : c.moveTo(x(r), y(a)));
+    line.slice().reverse().forEach(([r, , , b]) => c.lineTo(x(r), y(b))); c.fill();
+    c.strokeStyle = '#fff'; c.lineWidth = 2.5; c.beginPath();
+    line.forEach(([r, , med], i) => i ? c.lineTo(x(r), y(med)) : c.moveTo(x(r), y(med))); c.stroke();
+    c.fillStyle = '#8e99ab'; c.font = '12px Inter'; c.textAlign = 'left'; c.fillText('page score', 6, 12);
+    c.textAlign = 'right'; c.fillText('Steam reviews →', Wd - m.r, H - m.b - 6);
+  }
+  function nearest(ev) {
+    const rect = cv.getBoundingClientRect(), px = ev.clientX - rect.left, py = ev.clientY - rect.top;
+    let best = null, bd = 64;
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++)
+      for (const p of grid.get(((px >> 3) + i) + ',' + ((py >> 3) + j)) || []) {
+        const d = (p[0] - px) ** 2 + (p[1] - py) ** 2; if (d < bd) { bd = d; best = p; }
+      }
+    return best;
+  }
+  let shown = null;
+  function show([px, py, g]) {
+    shown = g;
+    tip.innerHTML = (g.adult ? '' : `<img src="${CDN(g.id, g.h)}" alt="">`)
+      + `<div><b>${esc(g.n)}</b><span style="color:${COL(g.r)}">${g.r.toLocaleString('en')} reviews</span> · page score ${g.s.toFixed(0)}`
+      + (g.adult ? '<br><small>adult game, image hidden</small>' : '') + '</div>';
+    tip.style.display = 'block';
+    const Wd = box.clientWidth, tw = tip.offsetWidth;
+    tip.style.left = (px + 14 + tw > Wd ? Math.max(0, px - tw - 14) : px + 14) + 'px';
+    tip.style.top = Math.max(0, py - tip.offsetHeight - 10) + 'px';
+  }
+  const hide = () => { tip.style.display = 'none'; shown = null; cv.style.cursor = 'default'; };
+  cv.addEventListener('mousemove', ev => { const p = nearest(ev); if (p) { show(p); cv.style.cursor = 'pointer'; } else hide(); });
+  cv.addEventListener('mouseleave', hide);
+  cv.addEventListener('click', ev => {
+    const p = nearest(ev); if (!p) return hide();
+    if (matchMedia('(hover: hover)').matches || shown === p[2]) window.open(steam(p[2].id), '_blank'); else show(p);
+  });
+  draw(); let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });
+}
+
+function dist(G) {
+  const groups = [['#ff4d5e', g => g.r < 10], ['#7d8aa0', g => g.r >= 10 && g.r < 1000], ['#8fdc5a', g => g.r >= 1000]];
+  const lo = 20, hi = 90, step = 2, nb = (hi - lo) / step;
+  const series = groups.map(([col, f]) => {
+    const h = new Array(nb).fill(0), sel = G.filter(f).sort((a, b) => a.s - b.s); let tot = 0;
+    for (const g of sel) { h[Math.min(nb - 1, Math.max(0, Math.floor((g.s - lo) / step)))] += g.w; tot += g.w; }
+    let cum = 0, med = 0; for (const g of sel) { cum += g.w; if (cum / tot >= .5) { med = g.s; break; } }
+    return {col, h: h.map(v => v / tot), med};
+  });
+  const ymax = Math.max(...series.flatMap(s => s.h)) * 1.08;
+  const Wd = 1000, Hd = 360, ml = 10, mr = 10, mt = 34, mb = 34;
+  const X = s => ml + (s - lo) / (hi - lo) * (Wd - ml - mr), Y = v => Hd - mb - v / ymax * (Hd - mt - mb);
+  let svg = `<svg viewBox="0 0 ${Wd} ${Hd}" width="100%" role="img" aria-label="Distribution of page scores per group">`;
+  for (let s = 20; s <= 90; s += 10) svg += `<line x1="${X(s)}" x2="${X(s)}" y1="${mt}" y2="${Hd - mb}" stroke="#202a39"/><text x="${X(s)}" y="${Hd - 10}" fill="#8e99ab" font-size="15" text-anchor="middle">${s}</text>`;
+  series.forEach(({col, h, med}, k) => {
+    const pts = h.map((v, i) => [X(lo + (i + .5) * step).toFixed(1), Y(v).toFixed(1)]);
+    const d = 'M' + pts.map(p => p.join(',')).join('L');
+    svg += `<path d="${d}L${X(hi)},${Y(0)}L${X(lo)},${Y(0)}Z" fill="${col}" opacity=".13"/><path d="${d}" fill="none" stroke="${col}" stroke-width="3"/>`;
+    svg += `<line x1="${X(med)}" x2="${X(med)}" y1="${mt - 4}" y2="${Hd - mb}" stroke="${col}" stroke-dasharray="4 4"/>`
+      + `<text x="${X(med)}" y="${mt - 10 - (k === 1 ? 0 : 0)}" fill="${col}" font-size="15" font-weight="600" text-anchor="${k === 0 ? 'end' : k === 2 ? 'start' : 'middle'}">median ${med.toFixed(0)}</text>`;
+  });
+  svg += `<text x="${Wd - mr}" y="${mt + 14}" fill="#8e99ab" font-size="14" text-anchor="end">page score →</text></svg>`;
+  document.getElementById('dist').innerHTML = svg;
+}
+
+function ladderAndBrowse(G) {
+  const LV = [['Top 1%', 'of page scores', .99, 1], ['Top 5%', '', .95, 1], ['Top 10%', '', .90, 1],
+              ['Top 25%', '', .75, 1], ['Top 50%', '', .50, 1], ['Bottom half', 'below average', 0, .5]];
+  const lv = LV.map(([name, sm, a, b]) => {
+    const sel = G.filter(g => g.p > a && g.p <= b), tot = sel.reduce((x, g) => x + g.w, 0);
+    const share = f => sel.filter(f).reduce((x, g) => x + g.w, 0) / tot * 100;
+    return {name, sm, sel, ign: share(g => g.r < 10), hit: share(g => g.r >= 1000)};
+  });
+  document.getElementById('ladder').innerHTML = lv.map(l =>
+    `<div class="rung"><div class="who">${l.name}${l.sm ? `<small>${l.sm}</small>` : ''}</div><div class="bars">`
+    + `<div class="bar"><div style="width:${l.ign * .8}%;background:var(--red)"></div><span class="red">${l.ign.toFixed(0)}% ignored</span></div>`
+    + `<div class="bar"><div style="width:${l.hit * .8}%;background:var(--green)"></div><span class="green">${l.hit.toFixed(0)}% hits</span></div></div></div>`).join('');
+
+  let cur = 1;
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = lv.map((l, i) => `<button data-i="${i}">${l.name}</button>`).join('') + '<button class="shuffle" data-s="1">↻ shuffle</button>';
+  tabs.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (!b.dataset.s) cur = +b.dataset.i; render(); };
+  function render() {
+    tabs.querySelectorAll('button[data-i]').forEach(b => b.classList.toggle('on', +b.dataset.i === cur));
+    const l = lv[cur];
+    // weighted random sample without replacement (Efraimidis-Spirakis), adult games left out
+    const pool = l.sel.filter(g => !g.adult).map(g => [Math.pow(Math.random(), 1 / g.w), g])
+      .sort((a, b) => b[0] - a[0]).slice(0, 24).map(x => x[1]);
+    const n = pool.filter(g => g.r < 10).length;
+    document.getElementById('count').innerHTML = `<span class="red">${n} of 24</span> ignored in this draw. Across Steam, ${l.ign.toFixed(0)}% of this level got ignored.`;
+    document.getElementById('games').innerHTML = pool.map(g =>
+      `<a class="game${g.r < 10 ? ' ign' : ''}" href="${steam(g.id)}" target="_blank" rel="noopener"><img src="${CDN(g.id, g.h)}" alt="" loading="lazy">`
+      + `<b>${esc(g.n)}</b><small><span class="r">${g.r.toLocaleString('en')} reviews</span> · score ${g.s.toFixed(0)}</small></a>`).join('');
+  }
+  render();
+}
 </script>
 </body>
 </html>
