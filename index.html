@@ -73,11 +73,12 @@ svg text{font-family:Inter,sans-serif}
 .count{color:var(--mut);font-size:15px;margin:0 0 16px}
 
 /* presence */
-.fd{margin:34px 0 8px}
-.fd>summary{cursor:pointer;font:600 20px "Space Grotesk",Inter,sans-serif;letter-spacing:-.015em;list-style:none;padding:10px 0;margin-bottom:8px}
-.fd>summary::-webkit-details-marker{display:none}
-.fd>summary::before{content:"B8";display:inline-block;width:22px;color:var(--mut)}
-.fd[open]>summary::before{content:"BE"}
+.qd,.fd{margin:18px 0}
+.fd{margin-top:34px}
+.qd>summary,.fd>summary{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;font:600 16px Inter,sans-serif;list-style:none;margin-bottom:16px}
+.qd>summary::-webkit-details-marker,.fd>summary::-webkit-details-marker{display:none}
+.qd>summary::after,.fd>summary::after{content:"";flex:none;width:8px;height:8px;border:solid var(--mut);border-width:0 2px 2px 0;transform:rotate(45deg) translateY(-3px);transition:transform .15s}
+.qd[open]>summary::after,.fd[open]>summary::after{transform:rotate(-135deg) translateY(-3px)}
 .psec h3{font-size:20px;margin:34px 0 8px}
 .pmxbox{position:relative;overflow-x:auto}
 .pmx{display:grid;grid-template-columns:120px repeat(4,minmax(0,1fr));gap:16px 12px;align-items:start;min-width:640px;padding:4px 0 8px}
@@ -117,11 +118,6 @@ span.chip:hover{color:var(--mut);border-color:var(--line)}
 code{font:500 .92em 'IBM Plex Mono',ui-monospace,monospace;color:var(--blue)}
 .qs .ctx{color:var(--mut);margin:0 0 6px}
 .qs blockquote{margin:0 0 8px;padding:0 0 0 16px;border-left:2px solid var(--line);color:#c7cfdb;font-size:15px;max-width:760px}
-.qd>summary{cursor:pointer;display:inline-block;padding:10px 16px;border:1px solid var(--line);border-radius:8px;font-weight:600;margin:6px 0 10px;list-style:none}
-.qd>summary::-webkit-details-marker{display:none}
-.qd[open]>summary::before{content:"Hide all 46 questions";}
-.qd[open]>summary{font-size:0}
-.qd[open]>summary::before{font-size:16px}
 .prose{max-width:720px}
 .prose p{color:#c7cfdb;margin:0 0 16px}
 img.full{width:100%;display:block}
@@ -213,7 +209,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 <section class="qs">
   <h2>The 46 questions the AI answered</h2>
   <p class="lead">Every page got exactly these questions, word for word. <code>header</code> is the capsule image, <code>screenshots</code> the four screenshots, <code>short_description</code> and <code>description</code> the store texts. The page score is the average of the 29 ratings marked "counts toward the page score". The AI never saw any review count.</p>
-<details class="qd"><summary>Show all 46 questions</summary>
+<details class="qd"><summary>Show the 46 questions</summary>
 <!--QUESTIONS-->
 <p class="ctx">Every request also started with this instruction:</p><blockquote>This is the Steam store page of a video game. <code>header</code> is the capsule image shown in store lists, <code>screenshots</code> are its store screenshots, <code>short_description</code> and <code>description</code> are its store texts. Judge presentation craft only. Ignore awards, press quotes, review scores and sales claims; they must not raise any rating.</blockquote>
 <h3>The capsule image <span>11</span></h3>
