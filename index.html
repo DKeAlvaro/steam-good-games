@@ -19,6 +19,14 @@ h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.015em}
 h2{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 10px}
 .lead{color:var(--mut);margin:0 0 20px;max-width:680px}
 section{padding:72px 0 0}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:16px}
+.toc{margin-top:40px;padding:18px 22px;border:1px solid var(--line);border-radius:10px;max-width:720px}
+.toc b{display:block;font:600 13px Inter;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.toc ol{margin:0;padding-left:22px;columns:1}
+.toc li{margin:5px 0}
+.toc a{color:var(--fg);text-decoration:none;font-size:15.5px}
+.toc a:hover{color:var(--blue)}
 a{color:var(--blue)}
 .red{color:var(--red)}.green{color:var(--green)}
 .note{color:var(--mut);font-size:14px;margin:12px 0 0;max-width:760px}
@@ -152,8 +160,10 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 
 <div class="wrap">
 
-<section>
-  <h2>Page quality vs. reviews</h2>
+<nav class="toc" id="toc"></nav>
+
+<section id="s-scatter">
+  <h2 id="fitTitle">Better store pages get far more reviews</h2>
   <p class="lead">Every dot is one game. Up means a better page score from the AI. Right means more Steam reviews, each step ten times more. Hover or tap a dot to see the game.</p>
   <div class="keys"><span><i style="background:var(--red)"></i>ignored (under 10 reviews)</span><span><i style="background:var(--grey)"></i>10 to 999 reviews</span><span><i style="background:var(--green)"></i>hit (1,000+)</span><span><i style="background:#fff;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>typical page score at each level</span><span><i style="background:#ffd166;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>page score 75</span></div>
   <div class="chart" id="scatterBox"><canvas id="scatter"></canvas><div class="tip" id="tip"></div></div>
@@ -161,52 +171,52 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <p class="note">The sample includes more successful games than Steam has, so that every level is covered. The charts below are weighted back to represent all 85,152 games.</p>
 </section>
 
-<section>
-  <h2>Ignored games have the worst pages</h2>
+<section id="s-dist">
+  <h2>Ignored games have the weakest store pages</h2>
   <p class="lead">How page scores are spread out within each group. The ignored games sit to the left, the hits to the right.</p>
   <div class="keys"><span><i style="background:var(--red)"></i>ignored</span><span><i style="background:var(--grey)"></i>10–999 reviews</span><span><i style="background:var(--green)"></i>hits</span></div>
   <div class="chart" id="dist"></div>
 </section>
 
-<section>
+<section id="s-odds">
   <h2>A top-5% page is 14x more likely to be a hit</h2>
   <p class="lead">Games grouped by where their page score ranks on Steam. For each group, the red bar is the share that got ignored and the green bar the share that became a hit with 1,000+ reviews.</p>
   <div class="ladder" id="ladder"></div>
 </section>
 
-<section class="psec">
-  <h2>Nobody ever saw those pages</h2>
+<section class="psec" id="s-ignored">
+  <h2>None of the 18 great-page games that got ignored had a video by another creator</h2>
   <p class="lead">A few games with a page score of 75 or more still got ignored. I took all 18 of them and 18 games with pages just as good that took off, and had a second AI (Claude Haiku) search the web for each one: official site, social accounts, press, videos by other creators, community threads. Store and database pages don't count. Hover a cover for what it found; click to open the game.</p>
   <div class="pmxbox" id="pmxbox"><div class="pmx" id="pmx"></div><div class="tip" id="ptip"></div></div>
   <p class="fit" id="psum"></p>
   <details class="fd"><summary>What the search found for the 18 ignored games</summary>
   <div class="fgrid" id="findings"></div>
   </details>
-  <h3>How many social accounts the games link on their Steam page</h3>
+  <h3>62% of the ignored games link no social account on their Steam page</h3>
   <p class="note">All 1,004 games with a page score of 75 or more, weighted to Steam, split by outcome. The count is what each store page itself lists.</p>
   <div class="keys" style="margin:10px 0" id="linkkeys"></div>
   <div class="ladder" id="linkdist"></div>
-  <h3>What happened to those games</h3>
+  <h3>Great pages that link 4+ social accounts are ignored 1% of the time, vs 8% with none</h3>
   <div class="ladder" id="linkout"></div>
   <p class="note">One caveat: part of the presence of the games that took off came after their success — popular games get videos and articles written about them, so this cannot show that marketing causes success. The other side is unambiguous, though: the ignored games were not covered before, during or after launch. Nobody knew they existed.</p>
 </section>
 
-<section>
-  <h2>Browse the games by level</h2>
+<section id="s-browse">
+  <h2>Browse real games, from ignored to hits</h2>
   <p class="lead">24 random games from each level, drawn in their real proportions. A red outline means the game got ignored. Click any game to open it on Steam.</p>
   <div class="tabs" id="tabs"></div>
   <p class="count" id="count"></p>
   <div class="games" id="games"></div>
 </section>
 
-<section>
-  <h2>What actually drives reviews</h2>
+<section id="s-drivers">
+  <h2>The developer's track record matters most, the page about a third</h2>
   <p class="lead">A machine-learning model predicted every game's reviews from its page (the AI ratings, in blue) and from facts about the game (in white). These are its Shapley values: each dot is a game, and the further right it sits, the more that feature pushed its reviews up. Red dots are games with a high value for that feature.</p>
   <img class="full" src="shap.png" alt="Shapley values of the reviews model">
   <p class="note">Who is behind the game matters most: how many reviews the developer's and publisher's other games have. Right after come the page signals: capsule art quality, whether players would click it, and whether it looks trustworthy. Together, the page ratings make up about a third of what the model uses.</p>
 </section>
 
-<section class="qs">
+<section class="qs" id="s-questions">
   <h2>The 46 questions the AI answered</h2>
   <p class="lead">Every page got exactly these questions, word for word. <code>header</code> is the capsule image, <code>screenshots</code> the four screenshots, <code>short_description</code> and <code>description</code> the store texts. The page score is the average of the 29 ratings marked "counts toward the page score". The AI never saw any review count.</p>
 <details class="qd"><summary>Show the 46 questions</summary>
@@ -274,7 +284,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </details>
 </section>
 
-<section class="prose">
+<section class="prose" id="s-how">
   <h2>How it was done</h2>
   <p>I started from a list of 85,152 Steam games and their review counts, from SteamSpy. I picked 14,836 of them so that every level of success is covered, from zero reviews to millions, and weighted them back so the numbers represent all of Steam.</p>
   <p>For each game I took what a player sees on its store page: the capsule image, four screenshots and the description, from Steam's store API. An AI model, Jev by TypeSafe, answered the 46 questions above about each page. Asked the same questions twice, it gave practically the same answers (r = 0.99). On 240 pages that I rated blind myself, it agreed with me on which page was better 7 to 8 times out of 10.</p>
@@ -300,6 +310,8 @@ fetch('data.json').then(r => r.json()).then(D => {
   let acc = 0;
   for (const g of G.slice().sort((a, b) => a.s - b.s)) { acc += g.w; g.p = acc / W; }  // Steam-weighted percentile
   hero(G); scatter(G); dist(G); ladderAndBrowse(G);
+  document.getElementById('fitTitle').textContent = `Each +10 points of page score goes with about ${window.PER10.toFixed(1)}× more reviews`;
+  document.getElementById('toc').innerHTML = '<b>In this page</b><ol>' + [...document.querySelectorAll('section[id] > h2')].map(h => `<li><a href="#${h.parentNode.id}">${h.textContent}</a></li>`).join('') + '</ol>';
   fetch('presence.json').then(r => r.json()).then(presence);
 });
 
@@ -320,6 +332,7 @@ function scatter(G) {
   let sxy = 0, sxx = 0, syy = 0;
   for (const g of G) { const dx = g.s - mx, dy = L(g.r) - my; sxy += g.w * dx * dy; sxx += g.w * dx * dx; syy += g.w * dy * dy; }
   const R2 = sxy * sxy / (sxx * syy), per10 = Math.pow(10, 10 * sxy / sxx);
+  window.PER10 = per10;
   document.getElementById('fit').innerHTML = `<b>R² = ${R2.toFixed(2)}</b>: the page score alone explains about ${Math.round(R2 * 100)}% of the differences in reviews (log scale, weighted to all of Steam). Each +10 points of page score goes with about ${per10.toFixed(1)}× more reviews.`;
   // what happens above a page score of 75 (Steam-weighted)
   const T = 75, top = G.filter(g => g.s >= T), tw = top.reduce((a, g) => a + g.w, 0);
