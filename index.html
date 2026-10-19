@@ -21,12 +21,11 @@ h2{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 10px}
 section{padding:72px 0 0}
 html{scroll-behavior:smooth}
 section[id]{scroll-margin-top:16px}
-.toc{margin-top:40px;padding:18px 22px;border:1px solid var(--line);border-radius:10px;max-width:720px}
-.toc b{display:block;font:600 13px Inter;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.toc ol{margin:0;padding-left:22px;columns:1}
-.toc li{margin:5px 0}
-.toc a{color:var(--fg);text-decoration:none;font-size:15.5px}
-.toc a:hover{color:var(--blue)}
+.toc{margin-top:0;padding:0;max-width:none}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.toc a{display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border:1px solid var(--line);border-radius:999px;color:var(--fg);text-decoration:none;font-size:14.5px;line-height:1.2}
+.toc a i{font:600 12px Inter;font-style:normal;color:var(--bg);background:var(--mut);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;flex:none}
+.toc a:hover{border-color:var(--mut)}
 a{color:var(--blue)}
 .red{color:var(--red)}.green{color:var(--green)}
 .note{color:var(--mut);font-size:14px;margin:12px 0 0;max-width:760px}
@@ -38,7 +37,7 @@ a{color:var(--blue)}
 .mosaic{position:absolute;inset:-14% -10%;display:grid;grid-template-columns:repeat(8,1fr);gap:10px;transform:rotate(-8deg);opacity:.7}
 .mosaic img{width:100%;aspect-ratio:460/215;object-fit:cover;border-radius:6px;display:block}
 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,14,20,.97) 0%,rgba(11,14,20,.88) 45%,rgba(11,14,20,.45) 100%),linear-gradient(180deg,rgba(11,14,20,0) 55%,var(--bg) 100%)}
-.hero .wrap{position:relative;z-index:1;padding-top:13vh;padding-bottom:13vh}
+.hero .wrap{position:relative;z-index:1;padding-top:13vh;padding-bottom:6vh}
 .kicker{font:600 13px/1 Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
 h1{font-size:clamp(42px,8vw,92px);line-height:.98;margin:16px 0 18px;max-width:880px}
 .sub{font-size:clamp(17px,2.2vw,21px);color:#c7cfdb;max-width:620px;margin:0 0 26px}
@@ -163,8 +162,8 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 <nav class="toc" id="toc"></nav>
 
 <section id="s-scatter">
-  <h2 id="fitTitle">Better store pages get far more reviews</h2>
-  <p class="lead">Every dot is one game. Up means a better page score from the AI. Right means more Steam reviews, each step ten times more. Hover or tap a dot to see the game.</p>
+  <h2 id="fitTitle" data-toc="Better page, more reviews">Better store pages get more reviews</h2>
+  <p class="lead">Every dot is one game. Up means a better page score from Jev. Right means more Steam reviews, each step ten times more. Hover or tap a dot to see the game.</p>
   <div class="keys"><span><i style="background:var(--red)"></i>ignored (under 10 reviews)</span><span><i style="background:var(--grey)"></i>10 to 999 reviews</span><span><i style="background:var(--green)"></i>hit (1,000+)</span><span><i style="background:#fff;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>typical page score at each level</span><span><i style="background:#ffd166;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>page score 75</span></div>
   <div class="chart" id="scatterBox"><canvas id="scatter"></canvas><div class="tip" id="tip"></div></div>
   <p class="fit" id="fit"></p>
@@ -172,20 +171,20 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section id="s-dist">
-  <h2>Ignored games have the weakest store pages</h2>
+  <h2 data-toc="Ignored games have weak pages">Ignored games have the weakest store pages</h2>
   <p class="lead">How page scores are spread out within each group. The ignored games sit to the left, the hits to the right.</p>
   <div class="keys"><span><i style="background:var(--red)"></i>ignored</span><span><i style="background:var(--grey)"></i>10–999 reviews</span><span><i style="background:var(--green)"></i>hits</span></div>
   <div class="chart" id="dist"></div>
 </section>
 
 <section id="s-odds">
-  <h2>A top-5% page is 14x more likely to be a hit</h2>
+  <h2 data-toc="Top-5% pages win">A top-5% page is 14x more likely to be a hit</h2>
   <p class="lead">Games grouped by where their page score ranks on Steam. For each group, the red bar is the share that got ignored and the green bar the share that became a hit with 1,000+ reviews.</p>
   <div class="ladder" id="ladder"></div>
 </section>
 
 <section class="psec" id="s-ignored">
-  <h2>None of the 18 great-page games that got ignored had a video by another creator</h2>
+  <h2 data-toc="Ignored but good: no distribution">The great-page games that got ignored did no distribution: not one had a video by another creator</h2>
   <p class="lead">A few games with a page score of 75 or more still got ignored. I took all 18 of them and 18 games with pages just as good that took off, and had a second AI (Claude Haiku) search the web for each one: official site, social accounts, press, videos by other creators, community threads. Store and database pages don't count. Hover a cover for what it found; click to open the game.</p>
   <div class="pmxbox" id="pmxbox"><div class="pmx" id="pmx"></div><div class="tip" id="ptip"></div></div>
   <p class="fit" id="psum"></p>
@@ -202,7 +201,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section id="s-browse">
-  <h2>Browse real games, from ignored to hits</h2>
+  <h2 data-toc="Try it yourself">Try it yourself: can you tell an ignored game from a hit by its page?</h2>
   <p class="lead">24 random games from each level, drawn in their real proportions. A red outline means the game got ignored. Click any game to open it on Steam.</p>
   <div class="tabs" id="tabs"></div>
   <p class="count" id="count"></p>
@@ -210,15 +209,15 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section id="s-drivers">
-  <h2>The developer's track record matters most, the page about a third</h2>
-  <p class="lead">A machine-learning model predicted every game's reviews from its page (the AI ratings, in blue) and from facts about the game (in white). These are its Shapley values: each dot is a game, and the further right it sits, the more that feature pushed its reviews up. Red dots are games with a high value for that feature.</p>
+  <h2 data-toc="What else matters">Once you know the page score, what else matters?</h2>
+  <p class="lead">A machine-learning model predicted every game's reviews from its page (Jev's ratings, in blue) and from facts about the game (in white). These are its Shapley values: each dot is a game, and the further right it sits, the more that feature pushed its reviews up. Red dots are games with a high value for that feature.</p>
   <img class="full" src="shap.png" alt="Shapley values of the reviews model">
   <p class="note">Who is behind the game matters most: how many reviews the developer's and publisher's other games have. Right after come the page signals: capsule art quality, whether players would click it, and whether it looks trustworthy. Together, the page ratings make up about a third of what the model uses.</p>
 </section>
 
 <section class="qs" id="s-questions">
-  <h2>The 46 questions the AI answered</h2>
-  <p class="lead">Every page got exactly these questions, word for word. <code>header</code> is the capsule image, <code>screenshots</code> the four screenshots, <code>short_description</code> and <code>description</code> the store texts. The page score is the average of the 29 ratings marked "counts toward the page score". The AI never saw any review count.</p>
+  <h2 data-toc="Jev's 46 questions">The 46 questions Jev answered about every page</h2>
+  <p class="lead">Every page got exactly these questions, word for word. <code>header</code> is the capsule image, <code>screenshots</code> the four screenshots, <code>short_description</code> and <code>description</code> the store texts. The page score is the average of the 29 ratings marked "counts toward the page score". Jev never saw any review count.</p>
 <details class="qd"><summary>Show the 46 questions</summary>
 <!--QUESTIONS-->
 <p class="ctx">Every request also started with this instruction:</p><blockquote>This is the Steam store page of a video game. <code>header</code> is the capsule image shown in store lists, <code>screenshots</code> are its store screenshots, <code>short_description</code> and <code>description</code> are its store texts. Judge presentation craft only. Ignore awards, press quotes, review scores and sales claims; they must not raise any rating.</blockquote>
@@ -285,7 +284,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section class="prose" id="s-how">
-  <h2>How it was done</h2>
+  <h2 data-toc="How it was done">How it was done</h2>
   <p>I started from a list of 85,152 Steam games and their review counts, from SteamSpy. I picked 14,836 of them so that every level of success is covered, from zero reviews to millions, and weighted them back so the numbers represent all of Steam.</p>
   <p>For each game I took what a player sees on its store page: the capsule image, four screenshots and the description, from Steam's store API. An AI model, Jev by TypeSafe, answered the 46 questions above about each page. Asked the same questions twice, it gave practically the same answers (r = 0.99). On 240 pages that I rated blind myself, it agreed with me on which page was better 7 to 8 times out of 10.</p>
   <p>Steam keeps sales private, so success is measured in reviews. One review is roughly 30 to 60 copies sold. "Ignored" means fewer than 10 reviews.</p>
@@ -310,8 +309,8 @@ fetch('data.json').then(r => r.json()).then(D => {
   let acc = 0;
   for (const g of G.slice().sort((a, b) => a.s - b.s)) { acc += g.w; g.p = acc / W; }  // Steam-weighted percentile
   hero(G); scatter(G); dist(G); ladderAndBrowse(G);
-  document.getElementById('fitTitle').textContent = `Each +10 points of page score goes with about ${window.PER10.toFixed(1)}× more reviews`;
-  document.getElementById('toc').innerHTML = '<b>In this page</b><ol>' + [...document.querySelectorAll('section[id] > h2')].map(h => `<li><a href="#${h.parentNode.id}">${h.textContent}</a></li>`).join('') + '</ol>';
+  document.getElementById('fitTitle').textContent = `Better store pages get more reviews: +10 points of page score is about ${window.PER10.toFixed(1)}× more`;
+  document.getElementById('toc').innerHTML = '<ol>' + [...document.querySelectorAll('section[id] > h2')].map((h, i) => `<li><a href="#${h.parentNode.id}"><i>${i + 1}</i>${h.dataset.toc}</a></li>`).join('') + '</ol>';
   fetch('presence.json').then(r => r.json()).then(presence);
 });
 
