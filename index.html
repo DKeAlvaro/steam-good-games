@@ -162,7 +162,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 <nav class="toc" id="toc"></nav>
 
 <section id="s-scatter">
-  <h2 id="fitTitle" data-toc="Better page, more reviews">Better store pages get more reviews</h2>
+  <h2 id="fitTitle" data-toc="Do better pages get more reviews?">Better store pages get more reviews</h2>
   <p class="lead">Every dot is one game. Up means a better page score from Jev. Right means more Steam reviews, each step ten times more. Hover or tap a dot to see the game.</p>
   <div class="keys"><span><i style="background:var(--red)"></i>ignored (under 10 reviews)</span><span><i style="background:var(--grey)"></i>10 to 999 reviews</span><span><i style="background:var(--green)"></i>hit (1,000+)</span><span><i style="background:#fff;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>typical page score at each level</span><span><i style="background:#ffd166;border-radius:2px;height:3px;width:18px;vertical-align:3px"></i>page score 75</span></div>
   <div class="chart" id="scatterBox"><canvas id="scatter"></canvas><div class="tip" id="tip"></div></div>
@@ -171,20 +171,20 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section id="s-dist">
-  <h2 data-toc="Ignored games have weak pages">Ignored games have the weakest store pages</h2>
+  <h2 data-toc="Do ignored games have worse pages?">Ignored games have the weakest store pages</h2>
   <p class="lead">How page scores are spread out within each group. The ignored games sit to the left, the hits to the right.</p>
   <div class="keys"><span><i style="background:var(--red)"></i>ignored</span><span><i style="background:var(--grey)"></i>10–999 reviews</span><span><i style="background:var(--green)"></i>hits</span></div>
   <div class="chart" id="dist"></div>
 </section>
 
 <section id="s-odds">
-  <h2 data-toc="Top-5% pages win">A top-5% page is 14x more likely to be a hit</h2>
+  <h2 data-toc="How much does a top page help?">A top-5% page is 14x more likely to be a hit</h2>
   <p class="lead">Games grouped by where their page score ranks on Steam. For each group, the red bar is the share that got ignored and the green bar the share that became a hit with 1,000+ reviews.</p>
   <div class="ladder" id="ladder"></div>
 </section>
 
 <section class="psec" id="s-ignored">
-  <h2 data-toc="Ignored but good: no distribution">The great-page games that got ignored did no distribution: not one had a video by another creator</h2>
+  <h2 data-toc="Why were good pages still ignored?">The great-page games that got ignored did no distribution: not one had a video by another creator</h2>
   <p class="lead">A few games with a page score of 75 or more still got ignored. I took all 18 of them and 18 games with pages just as good that took off, and had a second AI (Claude Haiku) search the web for each one: official site, social accounts, press, videos by other creators, community threads. Store and database pages don't count. Hover a cover for what it found; click to open the game.</p>
   <div class="pmxbox" id="pmxbox"><div class="pmx" id="pmx"></div><div class="tip" id="ptip"></div></div>
   <p class="fit" id="psum"></p>
@@ -201,7 +201,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section id="s-browse">
-  <h2 data-toc="Try it yourself">Try it yourself: can you tell an ignored game from a hit by its page?</h2>
+  <h2 data-toc="Can you tell them apart yourself?">Try it yourself: can you tell an ignored game from a hit by its page?</h2>
   <p class="lead">24 random games from each level, drawn in their real proportions. A red outline means the game got ignored. Click any game to open it on Steam.</p>
   <div class="tabs" id="tabs"></div>
   <p class="count" id="count"></p>
@@ -209,14 +209,14 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section id="s-drivers">
-  <h2 data-toc="What else matters">Once you know the page score, what else matters?</h2>
+  <h2 data-toc="What else drives reviews besides the page?">Once you know the page score, what else matters?</h2>
   <p class="lead">A machine-learning model predicted every game's reviews from its page (Jev's ratings, in blue) and from facts about the game (in white). These are its Shapley values: each dot is a game, and the further right it sits, the more that feature pushed its reviews up. Red dots are games with a high value for that feature.</p>
   <img class="full" src="shap.png" alt="Shapley values of the reviews model">
   <p class="note">Who is behind the game matters most: how many reviews the developer's and publisher's other games have. Right after come the page signals: capsule art quality, whether players would click it, and whether it looks trustworthy. Together, the page ratings make up about a third of what the model uses.</p>
 </section>
 
 <section class="qs" id="s-questions">
-  <h2 data-toc="Jev's 46 questions">The 46 questions Jev answered about every page</h2>
+  <h2 data-toc="What exactly did Jev ask?">The 46 questions Jev answered about every page</h2>
   <p class="lead">Every page got exactly these questions, word for word. <code>header</code> is the capsule image, <code>screenshots</code> the four screenshots, <code>short_description</code> and <code>description</code> the store texts. The page score is the average of the 29 ratings marked "counts toward the page score". Jev never saw any review count.</p>
 <details class="qd"><summary>Show the 46 questions</summary>
 <!--QUESTIONS-->
@@ -284,7 +284,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section class="prose" id="s-how">
-  <h2 data-toc="How it was done">How it was done</h2>
+  <h2 data-toc="How was this done?">How it was done</h2>
   <p>I started from a list of 85,152 Steam games and their review counts, from SteamSpy. I picked 14,836 of them so that every level of success is covered, from zero reviews to millions, and weighted them back so the numbers represent all of Steam.</p>
   <p>For each game I took what a player sees on its store page: the capsule image, four screenshots and the description, from Steam's store API. An AI model, Jev by TypeSafe, answered the 46 questions above about each page. Asked the same questions twice, it gave practically the same answers (r = 0.99). On 240 pages that I rated blind myself, it agreed with me on which page was better 7 to 8 times out of 10.</p>
   <p>Steam keeps sales private, so success is measured in reviews. One review is roughly 30 to 60 copies sold. "Ignored" means fewer than 10 reviews.</p>
