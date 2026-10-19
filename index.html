@@ -73,6 +73,11 @@ svg text{font-family:Inter,sans-serif}
 .count{color:var(--mut);font-size:15px;margin:0 0 16px}
 
 /* presence */
+.fd{margin:34px 0 8px}
+.fd>summary{cursor:pointer;font:600 20px "Space Grotesk",Inter,sans-serif;letter-spacing:-.015em;list-style:none;padding:10px 0;margin-bottom:8px}
+.fd>summary::-webkit-details-marker{display:none}
+.fd>summary::before{content:"B8";display:inline-block;width:22px;color:var(--mut)}
+.fd[open]>summary::before{content:"BE"}
 .psec h3{font-size:20px;margin:34px 0 8px}
 .pmxbox{position:relative;overflow-x:auto}
 .pmx{display:grid;grid-template-columns:120px repeat(4,minmax(0,1fr));gap:16px 12px;align-items:start;min-width:640px;padding:4px 0 8px}
@@ -178,8 +183,9 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <p class="lead">A few games with a page score of 75 or more still got ignored. I took all 18 of them and 18 games with pages just as good that took off, and had a second AI (Claude Haiku) search the web for each one: official site, social accounts, press, videos by other creators, community threads. Store and database pages don't count. Hover a cover for what it found; click to open the game.</p>
   <div class="pmxbox" id="pmxbox"><div class="pmx" id="pmx"></div><div class="tip" id="ptip"></div></div>
   <p class="fit" id="psum"></p>
-  <h3>What the search found for the 18 ignored games</h3>
+  <details class="fd"><summary>What the search found for the 18 ignored games</summary>
   <div class="fgrid" id="findings"></div>
+  </details>
   <h3>How many social accounts the games link on their Steam page</h3>
   <p class="note">All 1,004 games with a page score of 75 or more, weighted to Steam, split by outcome. The count is what each store page itself lists.</p>
   <div class="keys" style="margin:10px 0" id="linkkeys"></div>
