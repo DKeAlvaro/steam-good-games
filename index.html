@@ -112,6 +112,11 @@ span.chip:hover{color:var(--mut);border-color:var(--line)}
 code{font:500 .92em 'IBM Plex Mono',ui-monospace,monospace;color:var(--blue)}
 .qs .ctx{color:var(--mut);margin:0 0 6px}
 .qs blockquote{margin:0 0 8px;padding:0 0 0 16px;border-left:2px solid var(--line);color:#c7cfdb;font-size:15px;max-width:760px}
+.qd>summary{cursor:pointer;display:inline-block;padding:10px 16px;border:1px solid var(--line);border-radius:8px;font-weight:600;margin:6px 0 10px;list-style:none}
+.qd>summary::-webkit-details-marker{display:none}
+.qd[open]>summary::before{content:"Hide all 46 questions";}
+.qd[open]>summary{font-size:0}
+.qd[open]>summary::before{font-size:16px}
 .prose{max-width:720px}
 .prose p{color:#c7cfdb;margin:0 0 16px}
 img.full{width:100%;display:block}
@@ -202,6 +207,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 <section class="qs">
   <h2>The 46 questions the AI answered</h2>
   <p class="lead">Every page got exactly these questions, word for word. <code>header</code> is the capsule image, <code>screenshots</code> the four screenshots, <code>short_description</code> and <code>description</code> the store texts. The page score is the average of the 29 ratings marked "counts toward the page score". The AI never saw any review count.</p>
+<details class="qd"><summary>Show all 46 questions</summary>
 <!--QUESTIONS-->
 <p class="ctx">Every request also started with this instruction:</p><blockquote>This is the Steam store page of a video game. <code>header</code> is the capsule image shown in store lists, <code>screenshots</code> are its store screenshots, <code>short_description</code> and <code>description</code> are its store texts. Judge presentation craft only. Ignore awards, press quotes, review scores and sales claims; they must not raise any rating.</blockquote>
 <h3>The capsule image <span>11</span></h3>
@@ -263,6 +269,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 <li><p>How crowded is this game&#x27;s genre on Steam?</p><small>rating: Almost no competition → Little → Moderate → Crowded → Extremely saturated</small></li>
 </ol>
 <!--/QUESTIONS-->
+</details>
 </section>
 
 <section class="prose">
@@ -271,10 +278,6 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <p>For each game I took what a player sees on its store page: the capsule image, four screenshots and the description, from Steam's store API. An AI model, Jev by TypeSafe, answered the 46 questions above about each page. Asked the same questions twice, it gave practically the same answers (r = 0.99). On 240 pages that I rated blind myself, it agreed with me on which page was better 7 to 8 times out of 10.</p>
   <p>Steam keeps sales private, so success is measured in reviews. One review is roughly 30 to 60 copies sold. "Ignored" means fewer than 10 reviews.</p>
   <p>For the web-presence section, Claude Haiku (a small model from Anthropic) web-searched 36 of these games: every ignored game with a page score of 75 or more, plus 18 equally good pages that ended up with 1,000 to 30,000 reviews, picked at random as a control. Each search looked for an official site, social accounts, press coverage, videos by other creators and community threads, with the same questions every time. Every claim on that section links to what the search actually found.</p>
-  <h2 style="margin-top:44px">What this does not prove</h2>
-  <p>It shows a link, not a cause. Teams that make great pages often also have money, experience and fans, which is why the model above puts the developer's track record first.</p>
-  <p>Pages were measured as they are today, and successful games often polish their page after launch. For pages that were never updated a year after release, the link is weaker but still there. The AI also recognizes some famous games, and it judges how a game is presented, not whether it is fun. Brand-new games with zero reviews are under-counted in the list.</p>
-  <p class="note">Weighted Spearman correlation between page score and reviews: +0.40, and about +0.30 with the strictest controls. Linear R² of the page score alone: 0.17 (0.25 unweighted, because the sample over-represents successful games). Model R² for reviews: facts only 0.65, facts plus page 0.69, page only 0.45.</p>
 </section>
 
 <footer>By <a href="https://dkealvaro.github.io/">Álvaro Menéndez Ros</a> · October 2026 · Data: Steam Store API, SteamSpy · AI: TypeSafe Jev · Game art © its owners, via Steam's CDN.</footer>
