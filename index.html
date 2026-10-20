@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Do great games get ignored on Steam?</title>
-<meta name="description" content="I had an AI rate the store pages of 14,836 Steam games, then compared the score with how many players each game got.">
+<meta name="description" content="I had an AI rate the store pages of 30,924 Steam games, then compared the score with how many players each game got.">
 <meta property="og:title" content="Do great games get ignored on Steam?">
-<meta property="og:description" content="14,836 Steam store pages rated by AI, against their reviews.">
+<meta property="og:description" content="30,924 Steam store pages rated by AI, against their reviews.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -150,9 +150,9 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 <section class="hero">
   <div class="mosaic" id="mosaic"></div>
   <div class="wrap">
-    <div class="kicker">14,836 Steam games · rated by AI</div>
+    <div class="kicker">30,924 Steam games · rated by AI</div>
     <h1>Do great games get ignored on Steam?</h1>
-    <p class="sub">I had an AI rate the store page of 14,836 Steam games: capsule art, screenshots and description. Then I compared that score with how many players each game got.</p>
+    <p class="sub">I had an AI rate the store page of 30,924 Steam games: capsule art, screenshots and description. Then I compared that score with how many players each game got.</p>
     <p class="answer">Short answer: <span class="green">almost never.</span><small>The ignored games are overwhelmingly the ones with weak pages.</small></p>
   </div>
 </section>
@@ -184,20 +184,20 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 </section>
 
 <section class="psec" id="s-ignored">
-  <h2 data-toc="Good pages that got ignored were never promoted">The great-page games that got ignored did no distribution: not one had a video by another creator</h2>
-  <p class="lead">A few games with a page score of 75 or more still got ignored. I took all 18 of them and 18 games with pages just as good that took off, and had a second AI (Claude Haiku) search the web for each one: official site, social accounts, press, videos by other creators, community threads. Store and database pages don't count. Hover a cover for what it found; click to open the game.</p>
+  <h2 data-toc="Good pages that got ignored were barely promoted">The great-page games that got ignored did almost no distribution: 1 in 34 had a video by another creator</h2>
+  <p class="lead">A few games with a page score of 75 or more still got ignored. I took all 34 of them and 34 games with pages just as good that took off, and had a second AI (Claude Haiku) search the web for each one: official site, social accounts, press, videos by other creators, community threads. Store and database pages don't count. Hover a cover for what it found; click to open the game.</p>
   <div class="pmxbox" id="pmxbox"><div class="pmx" id="pmx"></div><div class="tip" id="ptip"></div></div>
   <p class="fit" id="psum"></p>
-  <details class="fd"><summary>What the search found for the 18 ignored games</summary>
+  <details class="fd"><summary>What the search found for the 34 ignored games</summary>
   <div class="fgrid" id="findings"></div>
   </details>
-  <h3>62% of the ignored games link no social account on their Steam page</h3>
-  <p class="note">All 1,004 games with a page score of 75 or more, weighted to Steam, split by outcome. The count is what each store page itself lists.</p>
+  <h3>Ignored games link fewer social accounts: 46% link none, and only 16% link four or more (hits: 34%)</h3>
+  <p class="note">All 1,762 games with a page score of 75 or more, weighted to Steam, split by outcome. The count is what each store page itself lists.</p>
   <div class="keys" style="margin:10px 0" id="linkkeys"></div>
   <div class="ladder" id="linkdist"></div>
-  <h3>Great pages that link 4+ social accounts are ignored 1% of the time, vs 8% with none</h3>
+  <h3>Great pages that link 4+ social accounts become hits 66% of the time, vs 50% with none</h3>
   <div class="ladder" id="linkout"></div>
-  <p class="note">One caveat: part of the presence of the games that took off came after their success — popular games get videos and articles written about them, so this cannot show that marketing causes success. The other side is unambiguous, though: the ignored games were not covered before, during or after launch. Nobody knew they existed.</p>
+  <p class="note">One caveat: part of the presence of the games that took off came after their success — popular games get videos and articles written about them, so this cannot show that marketing causes success. The other side is clear, though: almost none of the ignored games got covered before, during or after launch.</p>
 </section>
 
 <section id="s-browse">
@@ -212,7 +212,7 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
   <h2 data-toc="Who made the game matters more than the page">Once you know the page score, what else matters?</h2>
   <p class="lead">A machine-learning model predicted every game's reviews from its page (Jev's ratings, in blue) and from facts about the game (in white). These are its Shapley values: each dot is a game, and the further right it sits, the more that feature pushed its reviews up. Red dots are games with a high value for that feature.</p>
   <img class="full" src="shap.png" alt="Shapley values of the reviews model">
-  <p class="note">Who is behind the game matters most: how many reviews the developer's and publisher's other games have. Right after come the page signals: capsule art quality, whether players would click it, and whether it looks trustworthy. Together, the page ratings make up about a third of what the model uses.</p>
+  <p class="note">Who is behind the game matters most: how many reviews the developer's and publisher's other games have. Right after come the page signals: whether players would click it, capsule art quality, and whether it looks trustworthy. Together, the page ratings make up about a third of what the model uses.</p>
 </section>
 
 <section class="qs" id="s-questions">
@@ -285,10 +285,10 @@ footer{border-top:1px solid var(--line);margin-top:80px;padding:26px 0 60px;colo
 
 <section class="prose" id="s-how">
   <h2 data-toc="How I collected and checked the data">How it was done</h2>
-  <p>I started from a list of 85,152 Steam games and their review counts, from SteamSpy. I picked 14,836 of them so that every level of success is covered, from zero reviews to millions, and weighted them back so the numbers represent all of Steam.</p>
+  <p>I started from a list of 85,152 Steam games and their review counts, from SteamSpy. I picked 30,924 of them so that every level of success is covered, from zero reviews to millions, and weighted them back so the numbers represent all of Steam.</p>
   <p>For each game I took what a player sees on its store page: the capsule image, four screenshots and the description, from Steam's store API. An AI model, Jev by TypeSafe, answered the 46 questions above about each page. Asked the same questions twice, it gave practically the same answers (r = 0.99). On 240 pages that I rated blind myself, it agreed with me on which page was better 7 to 8 times out of 10.</p>
   <p>Steam keeps sales private, so success is measured in reviews. One review is roughly 30 to 60 copies sold. "Ignored" means fewer than 10 reviews.</p>
-  <p>For the web-presence section, Claude Haiku (a small model from Anthropic) web-searched 36 of these games: every ignored game with a page score of 75 or more, plus 18 equally good pages that ended up with 1,000 to 30,000 reviews, picked at random as a control. Each search looked for an official site, social accounts, press coverage, videos by other creators and community threads, with the same questions every time. Every claim on that section links to what the search actually found.</p>
+  <p>For the web-presence section, Claude Haiku (a small model from Anthropic) web-searched 68 of these games: every ignored game with a page score of 75 or more released at least a year earlier (34), plus 34 equally good pages that ended up with 1,000 to 30,000 reviews, picked at random as a control. Each search looked for an official site, social accounts, press coverage, videos by other creators and community threads, with the same questions every time. Every claim on that section links to what the search actually found.</p>
 </section>
 
 <footer>By <a href="https://dkealvaro.github.io/">Álvaro Menéndez Ros</a> · October 2026 · Data: Steam Store API, SteamSpy · AI: TypeSafe Jev · Game art © its owners, via Steam's CDN.</footer>
@@ -500,9 +500,12 @@ function presence(P) {
   box.addEventListener('mouseout', ev => { if (ev.target.closest('a[data-g]')) ptip.style.display = 'none'; });
 
   const nvid = grp => count(grp, g => g.videos.length > 0), nthr = grp => count(grp, g => g.threads.length > 0);
+  const nI = count('ignored', () => true), nC = count('control', () => true), vI = nvid('ignored');
   document.getElementById('psum').innerHTML =
-    `<b>None of the 18 ignored games has a single video by another creator</b>, and only ${nthr('ignored')} have threads in any community. `
-    + `Of the 18 that took off, ${nvid('control')} have videos by other creators and ${nthr('control')} have community threads. `
+    (vI ? `<b>Only ${vI} of the ${nI} ignored games ${vI === 1 ? 'has' : 'have'} a video by another creator</b>`
+        : `<b>None of the ${nI} ignored games has a single video by another creator</b>`)
+    + `, and only ${nthr('ignored')} have threads in any community. `
+    + `Of the ${nC} that took off, ${nvid('control')} have videos by other creators and ${nthr('control')} have community threads. `
     + `The "level 2" among the ignored is usually one or two reviews on small sites.`;
 
   // what the search found for each ignored game: cover, level, one clamped line, sources as chips
